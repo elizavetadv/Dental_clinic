@@ -12,7 +12,7 @@ public interface UserDAO {
 
     User addUser(User user) throws SQLException;
 
-    User updateUser(User user);
+    User updateUser(User user) throws SQLException;
 
     User deleteUser(long id) throws SQLException;
 }

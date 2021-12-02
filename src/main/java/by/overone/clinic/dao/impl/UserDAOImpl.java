@@ -14,7 +14,7 @@ public class UserDAOImpl implements UserDAO {
     private final static String ADD_USER_QUERY = "INSERT INTO user VALUE (0, ?, ?, ?)";
     private final static String GET_USER_BY_ID_QUERY = "SELECT * FROM user WHERE user_id=?";
     private final static String GET_USER_BY_EMAIL_QUERY = "SELECT * FROM user WHERE email=?";
-
+    private final static String UPDATE_USER_QUERY = "UPDATE user SET login=?, password=?, email=? WHERE user_id=?";
     private final static String DELETE_USER_QUERY = "DELETE FROM user WHERE user_id=?";
 
     static {
@@ -99,8 +99,17 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public User updateUser(User user) {
-        return null;
+    public User updateUser(User user) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_USER_QUERY);
+
+        preparedStatement.setString(1,user.getLogin());
+        preparedStatement.setString(2,user.getPassword());
+        preparedStatement.setString(3,user.getEmail());
+        preparedStatement.setLong(4, user.getId());
+
+        preparedStatement.executeUpdate();
+
+        return user;
     }
 
     @Override
