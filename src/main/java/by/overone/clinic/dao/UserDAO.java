@@ -8,7 +8,7 @@ import java.util.List;
 public interface UserDAO {
     List<User> getUsers() throws SQLException;
     User getUserById(long id);
-    User getUserByEmail(String email);
+    User getUserByEmail(String email) throws SQLException;
 
     User addUser(User user) throws SQLException;
 

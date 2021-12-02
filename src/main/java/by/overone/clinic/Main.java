@@ -12,9 +12,11 @@ public class Main {
 
         userDAO.getUsers().stream().forEach(System.out::println);
 
-        User userNew = new User(0,"Nikita", "64235", "nikita@gmail.com");
-        userDAO.addUser(userNew);
-        userDAO.getUsers().stream().forEach(System.out::println);
+//        User userNew = new User(0,"Nikita", "64235", "nikita@gmail.com");
+//        userDAO.addUser(userNew);
+//        userDAO.getUsers().stream().forEach(System.out::println);
+
+        System.out.println("\n" + userDAO.getUserByEmail("misha@gmail.com"));
     }
 
 }
