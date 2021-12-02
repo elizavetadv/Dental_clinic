@@ -17,6 +17,8 @@ public class Main {
 //        userDAO.getUsers().stream().forEach(System.out::println);
 
         System.out.println("\n" + userDAO.getUserByEmail("misha@gmail.com"));
+        System.out.println("\n" + userDAO.getUserById(1));
+
     }
 
 }
