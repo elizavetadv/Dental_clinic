@@ -10,4 +10,13 @@ public class User {
     private String password;
     private String email;
 
+    @Override
+    public String toString() {
+        return "User(" +
+                "id=" + id +
+                ", login=" + login +
+                ", password=" + password +
+                ", email=" + email +
+                ')';
+    }
 }
