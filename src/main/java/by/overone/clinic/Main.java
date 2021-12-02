@@ -19,6 +19,9 @@ public class Main {
         System.out.println("\n" + userDAO.getUserByEmail("misha@gmail.com"));
         System.out.println("\n" + userDAO.getUserById(1));
 
+        System.out.println("\n" + userDAO.deleteUser(5) + "\n");
+        userDAO.getUsers().stream().forEach(System.out::println);
+
     }
 
 }

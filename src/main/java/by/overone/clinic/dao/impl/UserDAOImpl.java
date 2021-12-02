@@ -15,6 +15,8 @@ public class UserDAOImpl implements UserDAO {
     private final static String GET_USER_BY_ID_QUERY = "SELECT * FROM user WHERE user_id=?";
     private final static String GET_USER_BY_EMAIL_QUERY = "SELECT * FROM user WHERE email=?";
 
+    private final static String DELETE_USER_QUERY = "DELETE FROM user WHERE user_id=?";
+
     static {
         try {
             String URL = "jdbc:mysql://localhost:3306/veterinary_clinic";
@@ -102,7 +104,14 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public User deleteUser(long id) {
-        return null;
+    public User deleteUser(long id) throws SQLException {
+        User user = getUserById(id);
+
+        PreparedStatement preparedStatement = connection.prepareStatement(DELETE_USER_QUERY);
+        preparedStatement.setLong(1,id);
+
+        preparedStatement.executeUpdate();
+
+        return user;
     }
 }

@@ -14,5 +14,5 @@ public interface UserDAO {
 
     User updateUser(User user);
 
-    User deleteUser(long id);
+    User deleteUser(long id) throws SQLException;
 }
