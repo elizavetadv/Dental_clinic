@@ -5,20 +5,16 @@ import by.overone.clinic.dao.impl.UserDAOImpl;
 import by.overone.clinic.model.User;
 
 import java.sql.SQLException;
-import java.util.List;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         UserDAO userDAO = new UserDAOImpl();
-        List<User> users = null;
 
-        try {
-            users = userDAO.getUsers();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        userDAO.getUsers().stream().forEach(System.out::println);
 
-        users.stream().forEach(System.out::println);
+        User userNew = new User(0,"Nikita", "64235", "nikita@gmail.com");
+        userDAO.addUser(userNew);
+        userDAO.getUsers().stream().forEach(System.out::println);
     }
 
 }

@@ -10,6 +10,17 @@ public class User {
     private String password;
     private String email;
 
+    public User(long id, String login, String password, String email) {
+        this.id = id;
+        this.login = login;
+        this.password = password;
+        this.email = email;
+    }
+
+    public User(){
+
+    }
+
     @Override
     public String toString() {
         return "User(" +

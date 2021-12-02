@@ -10,7 +10,7 @@ public interface UserDAO {
     User getUserById(long id);
     User getUserByEmail(String email);
 
-    User addUser(User user);
+    User addUser(User user) throws SQLException;
 
     User updateUser(User user);
 

@@ -11,7 +11,7 @@ public class UserDAOImpl implements UserDAO {
     private static Connection connection;
 
     private final static String GET_USERS_QUERY ="SELECT * FROM user";
-    private final static String ADD_USER_QUERY = "INSERT INTO users VALUE (0, ?, ?, ?)";
+    private final static String ADD_USER_QUERY = "INSERT INTO user VALUE (0, ?, ?, ?)";
 
     static {
         try {
@@ -40,7 +40,6 @@ public class UserDAOImpl implements UserDAO {
             user.setEmail(resultSet.getString("email"));
             users.add(user);
         }
-
         return users;
     }
 
@@ -55,8 +54,16 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public User addUser(User user) {
-        return null;
+    public User addUser(User user) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement(ADD_USER_QUERY);
+
+        preparedStatement.setString(1,user.getLogin());
+        preparedStatement.setString(2,user.getPassword());
+        preparedStatement.setString(3,user.getEmail());
+
+        preparedStatement.executeUpdate();
+
+        return user;
     }
 
     @Override
