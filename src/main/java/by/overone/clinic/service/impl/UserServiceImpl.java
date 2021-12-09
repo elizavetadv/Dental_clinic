@@ -44,9 +44,7 @@ public class UserServiceImpl implements UserService {
         user.setEmail(userRegistrationDTO.getEmail());
         user.setPassword(DigestUtils.md5Hex(userRegistrationDTO.getPassword()));
 
-        if (!UserValidator.validateRegistrationData(userRegistrationDTO)){
-            throw new ValidationException("Incorrect registration data");
-        }
+        UserValidator.validateRegistrationData(userRegistrationDTO);
 
         try {
             user = userDAO.addUser(user);
@@ -59,7 +57,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public UserDetails getUserDetails(long userId) throws ServiceException {
-        UserDetails userDetails = null;
+        UserDetails userDetails;
         try {
             userDetails = userDAO.getUserDetails(userId);
         } catch (DAONotFoundException e) {
