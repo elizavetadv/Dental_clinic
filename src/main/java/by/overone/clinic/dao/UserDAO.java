@@ -9,6 +9,8 @@ import by.overone.clinic.model.UserDetails;
 import java.util.List;
 
 public interface UserDAO {
+    User addUser(User user) throws DAONotFoundException, DAOUserExistException;
+
     List<User> getUsers() throws DAONotFoundException;
 
     User getUserById(long id) throws DAONotFoundException, UserNotFoundException;
@@ -17,11 +19,10 @@ public interface UserDAO {
 
     User getUserByLogin(String login) throws UserNotFoundException, DAONotFoundException;
 
-    User addUser(User user) throws DAONotFoundException, DAOUserExistException;
-
     //User updateUser(User user) throws SQLException;
-
     //void deleteUser(long id) throws SQLException, UserNotFoundException, DAONotFoundException;
+
+    void updateUserDetails(long id, UserDetails userDetails) throws DAONotFoundException;
 
     UserDetails getUserDetails(long id) throws DAONotFoundException;
 }
