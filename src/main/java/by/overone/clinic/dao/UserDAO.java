@@ -1,18 +1,27 @@
 package by.overone.clinic.dao;
 
+import by.overone.clinic.dao.exception.DAONotFoundException;
+import by.overone.clinic.dao.exception.DAOUserExistException;
+import by.overone.clinic.dao.exception.UserNotFoundException;
 import by.overone.clinic.model.User;
+import by.overone.clinic.model.UserDetails;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public interface UserDAO {
-    List<User> getUsers() throws SQLException;
-    User getUserById(long id) throws SQLException;
-    User getUserByEmail(String email) throws SQLException;
+    List<User> getUsers() throws DAONotFoundException;
 
-    User addUser(User user) throws SQLException;
+    User getUserById(long id) throws DAONotFoundException, UserNotFoundException;
 
-    User updateUser(User user) throws SQLException;
+    User getUserByEmail(String email) throws DAONotFoundException, UserNotFoundException;
 
-    User deleteUser(long id) throws SQLException;
+    User getUserByLogin(String login) throws UserNotFoundException, DAONotFoundException;
+
+    User addUser(User user) throws DAONotFoundException, DAOUserExistException;
+
+    //User updateUser(User user) throws SQLException;
+
+    //void deleteUser(long id) throws SQLException, UserNotFoundException, DAONotFoundException;
+
+    UserDetails getUserDetails(long id) throws DAONotFoundException;
 }
