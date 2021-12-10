@@ -10,4 +10,5 @@ public class UserConstant {
     public static final String ADDRESS = "address";
     public static final String PHONE_NUMBER = "phone_number";
     public static final String ROLE = "role";
+    public static final String DATA_BIRTH = "data_birth";
 }
