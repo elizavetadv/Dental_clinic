@@ -16,20 +16,20 @@ import java.util.List;
 
 public class UserDAOImpl implements UserDAO {
 
-    private final static String GET_USERS_QUERY = "SELECT * FROM user";
-    private final static String ADD_USER_QUERY = "INSERT INTO user VALUE (0, ?, ?, ?, ?)";
-    private final static String GET_USER_BY_ID_QUERY = "SELECT * FROM user WHERE user_id=?";
-    private final static String GET_USER_BY_EMAIL_QUERY = "SELECT * FROM user WHERE email=?";
-    private final static String GET_USER_BY_LOGIN_QUERY = "SELECT * FROM user WHERE login=?";
-    //private final static String UPDATE_USER_QUERY = "UPDATE user SET login=?, password=?, email=? WHERE user_id=?";
-    //private final static String DELETE_USER_QUERY = "DELETE FROM user WHERE user_id=?";
-    private final static String GET_USER_DETAILS_QUERY = "SELECT * FROM user_details WHERE user_user_id=?";
-    public static final String ADD_USER_DETAILS_ID_QUERY = "INSERT INTO user_details (user_user_id) VALUE(?)";
-    public static final String UPDATE_USER_DETAILS_QUERY = "UPDATE user_details SET name=?, surname=?, address=?, dataBirth=?, phone_number=? WHERE user_user_id=?";
-    //public static final String DELETE_USER_DETAILS_QUERY = "DELETE FROM user_details WHERE user_user_id=?";
+    private final static String GET_USERS_QUERY = "SELECT * FROM user;";
+    private final static String ADD_USER_QUERY = "INSERT INTO user VALUE (0, ?, ?, ?, ?);";
+    private final static String GET_USER_BY_ID_QUERY = "SELECT * FROM user WHERE user_id=?;";
+    private final static String GET_USER_BY_EMAIL_QUERY = "SELECT * FROM user WHERE email=?;";
+    private final static String GET_USER_BY_LOGIN_QUERY = "SELECT * FROM user WHERE login=?;";
+    //private final static String UPDATE_USER_QUERY = "UPDATE user SET login=?, password=?, email=? WHERE user_id=?;";
+    //private final static String DELETE_USER_QUERY = "DELETE FROM user WHERE user_id=?;";
+    private final static String GET_USER_DETAILS_QUERY = "SELECT * FROM user_details WHERE user_user_id=?;";
+    public static final String ADD_USER_DETAILS_ID_QUERY = "INSERT INTO user_details (user_user_id) VALUE(?);";
+    public static final String UPDATE_USER_DETAILS_QUERY = "UPDATE dental_clinic.user_details SET name=?, surname=?, address=?, dataBirth=?, phone_number=?, role=? WHERE user_user_id=?;";
+    //public static final String DELETE_USER_DETAILS_QUERY = "DELETE FROM user_details WHERE user_user_id=?;";
 
     @Override
-    public User addUser(User user) throws DAONotFoundException, DAOUserExistException {
+    public void addUser(User user) throws DAONotFoundException, DAOUserExistException {
         Connection connection = null;
         PreparedStatement preparedStatement;
         ResultSet resultSet;
@@ -73,8 +73,6 @@ public class UserDAOImpl implements UserDAO {
                 e.printStackTrace();
             }
         }
-
-        return user;
     }
 
     @Override
@@ -131,13 +129,13 @@ public class UserDAOImpl implements UserDAO {
             if (!resultSet.next()) {
                 throw new UserNotFoundException("User with id=" + id + " not found");
             }
-            while (resultSet.next()) {
-                user.setId(resultSet.getLong(UserConstant.USER_ID));
-                user.setLogin(resultSet.getString(UserConstant.LOGIN));
-                user.setPassword(resultSet.getString(UserConstant.PASSWORD));
-                user.setEmail(resultSet.getString(UserConstant.EMAIL));
-                user.setRole(resultSet.getString(UserConstant.ROLE));
-            }
+
+            user.setId(resultSet.getLong(UserConstant.USER_ID));
+            user.setLogin(resultSet.getString(UserConstant.LOGIN));
+            user.setPassword(resultSet.getString(UserConstant.PASSWORD));
+            user.setEmail(resultSet.getString(UserConstant.EMAIL));
+            user.setRole(resultSet.getString(UserConstant.ROLE));
+
         } catch (SQLException e) {
             throw new DAONotFoundException("something wrong");
         } finally {
@@ -172,13 +170,13 @@ public class UserDAOImpl implements UserDAO {
                 throw new UserNotFoundException("User with email=" + email + " not found");
             }
 
-            while (resultSet.next()) {
-                user.setId(resultSet.getLong(UserConstant.USER_ID));
-                user.setLogin(resultSet.getString(UserConstant.LOGIN));
-                user.setPassword(resultSet.getString(UserConstant.PASSWORD));
-                user.setEmail(resultSet.getString(UserConstant.EMAIL));
-                user.setRole(resultSet.getString(UserConstant.ROLE));
-            }
+
+            user.setId(resultSet.getLong(UserConstant.USER_ID));
+            user.setLogin(resultSet.getString(UserConstant.LOGIN));
+            user.setPassword(resultSet.getString(UserConstant.PASSWORD));
+            user.setEmail(resultSet.getString(UserConstant.EMAIL));
+            user.setRole(resultSet.getString(UserConstant.ROLE));
+
         } catch (SQLException e) {
             throw new DAONotFoundException("something wrong");
         } finally {
@@ -212,13 +210,13 @@ public class UserDAOImpl implements UserDAO {
             if (!resultSet.next()) {
                 throw new UserNotFoundException("User with login=" + login + " not found");
             }
-            while (resultSet.next()) {
-                user.setId(resultSet.getLong(UserConstant.USER_ID));
-                user.setLogin(resultSet.getString(UserConstant.LOGIN));
-                user.setPassword(resultSet.getString(UserConstant.PASSWORD));
-                user.setEmail(resultSet.getString(UserConstant.EMAIL));
-                user.setRole(resultSet.getString(UserConstant.ROLE));
-            }
+
+            user.setId(resultSet.getLong(UserConstant.USER_ID));
+            user.setLogin(resultSet.getString(UserConstant.LOGIN));
+            user.setPassword(resultSet.getString(UserConstant.PASSWORD));
+            user.setEmail(resultSet.getString(UserConstant.EMAIL));
+            user.setRole(resultSet.getString(UserConstant.ROLE));
+
 
         } catch (SQLException e) {
             throw new DAONotFoundException("something wrong");
@@ -234,7 +232,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public void updateUserDetails(long id, UserDetails userDetails) throws DAONotFoundException {
+    public void updateUserDetails(User user, UserDetails userDetails) throws DAONotFoundException {
         Connection connection = null;
         PreparedStatement preparedStatement;
 
@@ -247,7 +245,8 @@ public class UserDAOImpl implements UserDAO {
             preparedStatement.setString(3, userDetails.getAddress());
             preparedStatement.setString(4, userDetails.getDataBirth());
             preparedStatement.setString(5, userDetails.getPhoneNumber());
-            preparedStatement.setLong(6, id);
+            preparedStatement.setString(6, user.getRole());
+            preparedStatement.setLong(7, user.getId());
 
             preparedStatement.executeUpdate();
 
@@ -276,14 +275,19 @@ public class UserDAOImpl implements UserDAO {
             preparedStatement = connection.prepareStatement(GET_USER_DETAILS_QUERY);
             preparedStatement.setLong(1, userId);
             resultSet = preparedStatement.executeQuery();
+
             userDetails = new UserDetails();
 
-            while (resultSet.next()) {
+            while(resultSet.next()) {
                 userDetails.setName(resultSet.getString(UserConstant.NAME));
                 userDetails.setSurname(resultSet.getString(UserConstant.SURNAME));
                 userDetails.setAddress(resultSet.getString(UserConstant.ADDRESS));
+                userDetails.setDataBirth(resultSet.getString(UserConstant.DATA_BIRTH));
                 userDetails.setPhoneNumber(resultSet.getString(UserConstant.PHONE_NUMBER));
+                userDetails.setRole(resultSet.getString(UserConstant.ROLE));
             }
+
+
         } catch (SQLException e) {
             throw new DAONotFoundException("something wrong");
         } finally {

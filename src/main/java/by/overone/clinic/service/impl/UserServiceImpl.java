@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDataDTO addUser(UserRegistrationDTO userRegistrationDTO) throws ServiceException, ServiceUserExistException, ValidationException {
+    public void addUser(UserRegistrationDTO userRegistrationDTO) throws ServiceException, ServiceUserExistException, ValidationException {
         User user = new User();
         user.setLogin(userRegistrationDTO.getLogin());
         user.setEmail(userRegistrationDTO.getEmail());
@@ -47,13 +47,24 @@ public class UserServiceImpl implements UserService {
         UserValidator.validateRegistrationData(userRegistrationDTO);
 
         try {
-            user = userDAO.addUser(user);
+            userDAO.addUser(user);
         } catch (DAOUserExistException e) {
             throw new ServiceUserExistException("User already exist");
-        }catch (DAONotFoundException e) {
+        } catch (DAONotFoundException e) {
             throw new ServiceException("UserService. addUser, User not added", e);
         }
-        return new UserDataDTO(0, user.getLogin(), user.getEmail());
+    }
+
+    @Override
+    public void addUserDetails(User user, UserDetails userDetails) {
+        //UserValidator.validateRegistrationData(userDetails);
+
+        try {
+            userDAO.updateUserDetails(user, userDetails);
+        } catch (DAONotFoundException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public UserDetails getUserDetails(long userId) throws ServiceException {
