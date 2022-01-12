@@ -1,23 +1,27 @@
 package by.overone.clinic.service;
 
-import by.overone.clinic.dao.exception.DAONotFoundException;
 import by.overone.clinic.dto.UserDataDTO;
 import by.overone.clinic.dto.UserRegistrationDTO;
 import by.overone.clinic.model.User;
-import by.overone.clinic.model.UserDetails;
-import by.overone.clinic.service.exception.ServiceException;
-import by.overone.clinic.service.exception.ServiceUserExistException;
 import by.overone.clinic.util.validation.exception.ValidationException;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserService {
 
-    List<UserDataDTO> getAllUsers() throws ServiceException;
+    void addUser(UserRegistrationDTO userRegistrationDTO) throws ValidationException;
 
-    void addUser(UserRegistrationDTO userRegistrationDTO) throws DAONotFoundException, ServiceException, ServiceUserExistException, ValidationException;
+    void deleteUserById(long id);
 
-    void addUserDetails(User user, UserDetails userDetails);
+    UserDataDTO getUserById(long id);
 
-    UserDetails getUserDetails(long userId) throws ServiceException;
+    List<UserDataDTO> getAllUsers();
+
+    List<UserDataDTO> getAllUsersByStatus(String status);
+
+    List<UserDataDTO> getAllUsersByRole(String role);
+
+    Optional<User> getUserBySurname(String surname);
+
 }

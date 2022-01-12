@@ -1,44 +1,34 @@
 package by.overone.clinic.service.impl;
 
+import by.overone.clinic.controller.exception.ExceptionCode;
 import by.overone.clinic.dao.UserDAO;
-import by.overone.clinic.dao.exception.DAONotFoundException;
-import by.overone.clinic.dao.exception.DAOUserExistException;
-import by.overone.clinic.dao.impl.UserDAOImpl;
+import by.overone.clinic.dao.exception.DAOUserNotFoundException;
 import by.overone.clinic.dto.UserDataDTO;
 import by.overone.clinic.dto.UserRegistrationDTO;
 import by.overone.clinic.model.User;
-import by.overone.clinic.model.UserDetails;
 import by.overone.clinic.service.UserService;
-import by.overone.clinic.service.exception.ServiceException;
-import by.overone.clinic.service.exception.ServiceUserExistException;
 import by.overone.clinic.util.validation.UserValidator;
 import by.overone.clinic.util.validation.exception.ValidationException;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Service
 public class UserServiceImpl implements UserService {
 
-    private final UserDAO userDAO = new UserDAOImpl();
+    @Autowired
+    private UserDAO userDAO;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Override
-    public List<UserDataDTO> getAllUsers() throws ServiceException {
-        List<UserDataDTO> userDataDTOs;
-
-        try {
-            List<User> users = userDAO.getUsers();
-            userDataDTOs = users.stream()
-                    .map(user -> new UserDataDTO(user.getId(), user.getLogin(), user.getEmail()))
-                    .collect(Collectors.toList());
-        } catch (DAONotFoundException e) {
-            throw new ServiceException(e);
-        }
-        return userDataDTOs;
-    }
-
-    @Override
-    public void addUser(UserRegistrationDTO userRegistrationDTO) throws ServiceException, ServiceUserExistException, ValidationException {
+    public void addUser(UserRegistrationDTO userRegistrationDTO) throws ValidationException {
         User user = new User();
         user.setLogin(userRegistrationDTO.getLogin());
         user.setEmail(userRegistrationDTO.getEmail());
@@ -46,34 +36,52 @@ public class UserServiceImpl implements UserService {
 
         UserValidator.validateRegistrationData(userRegistrationDTO);
 
-        try {
-            userDAO.addUser(user);
-        } catch (DAOUserExistException e) {
-            throw new ServiceUserExistException("User already exist");
-        } catch (DAONotFoundException e) {
-            throw new ServiceException("UserService. addUser, User not added", e);
-        }
+        userDAO.addUser(user);
     }
 
     @Override
-    public void addUserDetails(User user, UserDetails userDetails) {
-        //UserValidator.validateRegistrationData(userDetails);
-
-        try {
-            userDAO.updateUserDetails(user, userDetails);
-        } catch (DAONotFoundException e) {
-            e.printStackTrace();
-        }
-
+    public void deleteUserById(long id) {
+        getUserById(id);
+        userDAO.deleteUserById(id);
     }
 
-    public UserDetails getUserDetails(long userId) throws ServiceException {
-        UserDetails userDetails;
-        try {
-            userDetails = userDAO.getUserDetails(userId);
-        } catch (DAONotFoundException e) {
-            throw new ServiceException("Exception. UserServiceImpl. getUserDetail", e);
-        }
-        return userDetails;
+    @Override
+    public UserDataDTO getUserById(long id) {
+        User user = userDAO.getUserById(id).orElseThrow(() -> new DAOUserNotFoundException(ExceptionCode.NOT_EXISTING_USER.getErrorCode()));
+        return modelMapper.map(user, UserDataDTO.class);
+    }
+
+    @Override
+    public List<UserDataDTO> getAllUsers() {
+        return userDAO.getAllUsers()
+                .stream()
+                .map(user -> new UserDataDTO(user.getUser_id(), user.getLogin(), user.getEmail()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UserDataDTO> getAllUsersByStatus(String status) {
+        List<UserDataDTO> userDataDTOs;
+
+        List<User> users = userDAO.getAllUsersByStatus(status);
+        userDataDTOs = users.stream()
+                .map(user -> new UserDataDTO(user.getUser_id(), user.getLogin(), user.getEmail()))
+                .collect(Collectors.toList());
+
+        return userDataDTOs;
+    }
+
+    @Override
+    public List<UserDataDTO> getAllUsersByRole(String role) {
+        List<User> users = userDAO.getAllUsersByRole(role);
+
+        return users.stream()
+                .map(user -> new UserDataDTO(user.getUser_id(), user.getLogin(), user.getEmail()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<User> getUserBySurname(String surname) {
+        return userDAO.getUserBySurname(surname);
     }
 }
