@@ -7,25 +7,23 @@ import lombok.NoArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Validated
-public class UserRegistrationDTO {
-    @NotNull
+public class UserUpdatedDTO {
+    private long user_id;
+
     @NotBlank
     @Pattern(regexp = UserValidator.LOGIN_REGEX)
     private String login;
 
-    @NotNull
     @NotBlank
     @Pattern(regexp = UserValidator.PASSWORD_REGEX)
     private String password;
 
-    @NotNull
     @NotBlank
     @Pattern(regexp = UserValidator.EMAIL_REGEX)
     private String email;

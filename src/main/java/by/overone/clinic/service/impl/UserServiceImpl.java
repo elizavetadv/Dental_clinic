@@ -5,9 +5,9 @@ import by.overone.clinic.dao.UserDAO;
 import by.overone.clinic.dao.exception.DAOUserNotFoundException;
 import by.overone.clinic.dto.UserDataDTO;
 import by.overone.clinic.dto.UserRegistrationDTO;
+import by.overone.clinic.dto.UserUpdatedDTO;
 import by.overone.clinic.model.User;
 import by.overone.clinic.service.UserService;
-import by.overone.clinic.util.validation.UserValidator;
 import by.overone.clinic.util.validation.exception.ValidationException;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.modelmapper.ModelMapper;
@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,7 +33,7 @@ public class UserServiceImpl implements UserService {
         user.setEmail(userRegistrationDTO.getEmail());
         user.setPassword(DigestUtils.md5Hex(userRegistrationDTO.getPassword()));
 
-        UserValidator.validateRegistrationData(userRegistrationDTO);
+//        UserValidator.validateRegistrationData(userRegistrationDTO);
 
         userDAO.addUser(user);
     }
@@ -43,6 +42,15 @@ public class UserServiceImpl implements UserService {
     public void deleteUserById(long id) {
         getUserById(id);
         userDAO.deleteUserById(id);
+    }
+
+    @Override
+    public void updateUser(UserUpdatedDTO userUpdatedDTO) {
+        getUserById(userUpdatedDTO.getUser_id());
+
+        //validation
+
+        userDAO.updateUser(userUpdatedDTO);
     }
 
     @Override
@@ -81,7 +89,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> getUserBySurname(String surname) {
-        return userDAO.getUserBySurname(surname);
+    public UserDataDTO getUserBySurname(String surname) {
+        User user = userDAO.getUserBySurname(surname).orElseThrow(() -> new DAOUserNotFoundException(ExceptionCode.NOT_EXISTING_USER.getErrorCode()));
+        return modelMapper.map(user, UserDataDTO.class);
     }
 }

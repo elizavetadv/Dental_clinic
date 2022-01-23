@@ -1,5 +1,6 @@
 package by.overone.clinic.dao;
 
+import by.overone.clinic.dto.UserUpdatedDTO;
 import by.overone.clinic.model.User;
 
 import java.util.List;
@@ -11,7 +12,7 @@ public interface UserDAO {
 
     void deleteUserById(long id);
 
-//    void updateUser()
+    void updateUser(UserUpdatedDTO userUpdatedDTO);
 
     Optional<User> getUserById(long id);
 
@@ -23,7 +24,5 @@ public interface UserDAO {
 
     List<User> getAllUsersByRole(String role);
 
-    Optional<User> getUserBySurname(String surname); //???
-
-
+    Optional<User> getUserBySurname(String surname);
 }

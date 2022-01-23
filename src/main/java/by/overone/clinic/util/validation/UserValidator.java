@@ -4,9 +4,9 @@ import by.overone.clinic.dto.UserRegistrationDTO;
 import by.overone.clinic.util.validation.exception.*;
 
 public class UserValidator {
-    private final static String LOGIN_REGEX = "^[\\w]{5,10}$";
-    private final static String EMAIL_REGEX = "^[^\\s]+@[\\w]+\\.[a-z]+$";
-    private final static String PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{6,}$";
+    public final static String LOGIN_REGEX = "^[a-z0-9]{5,10}$";
+    public final static String EMAIL_REGEX = "^[^\\s]+@[\\w]+\\.[a-z]+$";
+    public final static String PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{6,}$";
 
     public static void validateRegistrationData(UserRegistrationDTO userRegistrationDTO) throws ValidationException {
         validateLogin(userRegistrationDTO.getLogin());
@@ -25,6 +25,8 @@ public class UserValidator {
 //            throw new ValidationException("incorrect email");
 //        }
     }
+
+//    public static void validateLoggingData()
 
     private static boolean validateLogin(String login) throws ValidationException {
         if (login == null){

@@ -1,7 +1,11 @@
 package by.overone.clinic.dao;
 
+import by.overone.clinic.dto.ClientAllDataDTO;
+import by.overone.clinic.dto.DoctorAllDataDTO;
 import by.overone.clinic.model.ClientDetails;
 import by.overone.clinic.model.DoctorDetails;
+
+import java.util.List;
 
 public interface DetailsDAO {
     void addClientDetails(long id, ClientDetails userDetails);
@@ -15,4 +19,10 @@ public interface DetailsDAO {
     ClientDetails getClientDetails(long id);
 
     DoctorDetails getDoctorDetails(long id);
+
+    List<DoctorDetails> getDoctorDetailsByType(String type);
+
+    ClientAllDataDTO getAllClientData(long id);
+
+    DoctorAllDataDTO getAllDoctorData(long id);
 }

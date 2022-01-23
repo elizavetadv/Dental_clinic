@@ -13,9 +13,13 @@ import by.overone.clinic.service.UserService;
 import by.overone.clinic.service.exception.ServiceException;
 import by.overone.clinic.service.exception.ServiceUserNotFoundException;
 import by.overone.clinic.service.impl.UserServiceImpl;
+import org.apache.log4j.Logger;
 
 public class Main {
     public static void main(String[] args) throws ServiceException {
+
+
+
         UserService userService = new UserServiceImpl();
         System.out.println("hello");
 //        try {

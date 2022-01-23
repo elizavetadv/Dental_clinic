@@ -1,19 +1,28 @@
 package by.overone.clinic.service;
 
+import by.overone.clinic.dto.ClientAllDataDTO;
+import by.overone.clinic.dto.DoctorAllDataDTO;
 import by.overone.clinic.model.ClientDetails;
 import by.overone.clinic.model.DoctorDetails;
-import by.overone.clinic.util.validation.exception.ValidationException;
+
+import java.util.List;
 
 public interface DetailsService {
-    void addClientDetails(long id, ClientDetails clientDetails) throws ValidationException;
+    void addClientDetails(long id, ClientDetails clientDetails);
 
-    void addDoctorDetails(long id, DoctorDetails doctorDetails) throws ValidationException;
+    void addDoctorDetails(long id, DoctorDetails doctorDetails);
 
-    void updateClientDetails(ClientDetails clientDetails) throws ValidationException;
+    void updateClientDetails(ClientDetails clientDetails);
 
-    void updateDoctorDetails(DoctorDetails doctorDetails) throws ValidationException;
+    void updateDoctorDetails(DoctorDetails doctorDetails);
 
     ClientDetails getClientDetails(long id);
 
     DoctorDetails getDoctorDetails(long id);
+
+    List<DoctorDetails> getDoctorDetailsByType(String type);
+
+    ClientAllDataDTO getAllClientData(long id);
+
+    DoctorAllDataDTO getAllDoctorData(long id);
 }
