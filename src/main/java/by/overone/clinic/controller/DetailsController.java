@@ -1,8 +1,7 @@
 package by.overone.clinic.controller;
 
 import by.overone.clinic.dao.DetailsDAO;
-import by.overone.clinic.dto.ClientAllDataDTO;
-import by.overone.clinic.dto.DoctorAllDataDTO;
+import by.overone.clinic.dto.*;
 import by.overone.clinic.model.ClientDetails;
 import by.overone.clinic.model.DoctorDetails;
 import by.overone.clinic.service.DetailsService;
@@ -21,48 +20,53 @@ public class DetailsController {
     private final DetailsDAO detailsDAO;
 
     @Transactional
-    @PostMapping("/addClient/{id}")
-    public void addClientDetails(@PathVariable long id, @Valid @RequestBody ClientDetails clientDetails){
-        detailsService.addClientDetails(id, clientDetails);
+    @PostMapping("/{id}")
+    public void addClientDetails(@PathVariable long id, @Valid @RequestBody ClientDetailsDTO clientDetailsDTO){
+        detailsService.addClientDetails(id, clientDetailsDTO);
     }
 
-    @Transactional
-    @PostMapping("/addDoctor/{id}")
-    public void addDoctorDetails(@PathVariable long id, @Valid @RequestBody DoctorDetails doctorDetails){
-        detailsService.addDoctorDetails(id, doctorDetails);
+    @PatchMapping("/{id}")
+    public void updateClientDetails(@PathVariable long id, @Valid @RequestBody ClientDetailsDTO clientDetailsDTO){
+        detailsService.updateClientDetails(id, clientDetailsDTO);
     }
 
-    @PatchMapping("/updateClient")
-    public void updateClientDetails(@Valid @RequestBody ClientDetails clientDetails){
-        detailsService.updateClientDetails(clientDetails);
-    }
-
-    @PatchMapping("/updateDoctor")
-    public void updateDoctorDetails(@Valid @RequestBody DoctorDetails doctorDetails){
-        detailsService.updateDoctorDetails(doctorDetails);
-    }
-
-    @GetMapping("/getClient/{id}")
-    public ClientDetails getClientDetails(@PathVariable long id){
+    @GetMapping("/{id}")
+    public ClientDetailsDTO getClientDetails(@PathVariable long id){
         return detailsService.getClientDetails(id);
     }
 
-    @GetMapping("/getDoctor/{id}")
-    public DoctorDetails getDoctorDetails(@PathVariable long id){
-        return detailsService.getDoctorDetails(id);
-    }
-
-    @GetMapping("/getDoctor/type/{type}")
-    public List<DoctorDetails> getDoctorDetailsByType(@PathVariable String type){
-        return detailsService.getDoctorDetailsByType(type);
-    }
-
-    @GetMapping("/getClient/info/{id}")
+    @GetMapping("/{id}/info")
     public ClientAllDataDTO getAllClientData(@PathVariable long id){
         return detailsService.getAllClientData(id);
     }
 
-    @GetMapping("/getDoctor/info/{id}")
+    @GetMapping("/{id}/records")
+    public List<ClientRecordDTO> getClientRecords(@PathVariable long id){
+        return detailsService.getClientRecord(id);
+    }
+
+    @Transactional
+    @PostMapping("/admin/{id}")
+    public void addDoctorDetails(@PathVariable long id, @Valid @RequestBody DoctorDetailsDTO doctorDetailsDTO){
+        detailsService.addDoctorDetails(id, doctorDetailsDTO);
+    }
+
+    @PatchMapping("/admin/{id}")
+    public void updateDoctorDetails(@PathVariable long id, @Valid @RequestBody DoctorDetailsDTO doctorDetailsDTO){
+        detailsService.updateDoctorDetails(id, doctorDetailsDTO);
+    }
+
+    @GetMapping("/doc/{id}")
+    public DoctorDetailsDTO getDoctorDetails(@PathVariable long id){
+        return detailsService.getDoctorDetails(id);
+    }
+
+    @GetMapping("/doc/type/{type}")
+    public List<DoctorDetailsDTO> getDoctorDetailsByType(@PathVariable String type){
+        return detailsService.getDoctorDetailsByType(type);
+    }
+
+    @GetMapping("/doc/{id}/info")
     public DoctorAllDataDTO getAllDoctorData(@PathVariable long id){
         return detailsService.getAllDoctorData(id);
     }

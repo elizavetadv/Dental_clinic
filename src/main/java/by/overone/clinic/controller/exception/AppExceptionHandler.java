@@ -1,30 +1,73 @@
 package by.overone.clinic.controller.exception;
 
-import by.overone.clinic.dao.exception.DAODetailsNotFoundException;
-import by.overone.clinic.dao.exception.DAOUserNotFoundException;
+import by.overone.clinic.dao.exception.*;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.MessageSource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
+@RequiredArgsConstructor
 @ControllerAdvice
-public class AppExceptionHandler {
+public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(DAOUserNotFoundException.class)
-    public ResponseEntity<ExceptionResponse> userNotFoundHandler(DAOUserNotFoundException e) {
+    private final MessageSource messageSource;
+
+//    @ExceptionHandler(DAOUserNotFoundException.class)
+//    public ResponseEntity<ExceptionResponse> userNotFoundHandler(DAOUserNotFoundException e, WebRequest webRequest) {
+//        ExceptionResponse response = new ExceptionResponse();
+//
+//        response.setException(e.getClass().getSimpleName());
+//        response.setErrorCode(e.getMessage());
+//        response.setMessage(messageSource.getMessage(e.getMessage(), new Object[]{"aa", "bb"}, webRequest.getLocale()));
+//
+//        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+//    }
+
+    @ExceptionHandler(DAONotExistException.class)
+    public ResponseEntity<ExceptionResponse> notExistHandler(DAONotExistException e) {
         ExceptionResponse response = new ExceptionResponse();
-
         response.setException(e.getClass().getSimpleName());
         response.setErrorCode(e.getMessage());
-        response.setMessage("User not found");
+        String message = "";
+        switch (e.getMessage()) {
+            case "2":
+                message = "User not found";
+                break;
+            case "7":
+                message = "Client Details not found";
+                break;
+            case "8":
+                message = "Doctor Details not found";
+                break;
+            case "10":
+                message = "Record not found";
+                break;
+            case "17":
+                message = "Reception not found";
+                break;
+            case "18":
+                message = "Record not made. Time is busy. Please choose another";
+                break;
+        }
+        response.setMessage(message);
 
-        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        log.error("error", e);
+
+        return new ResponseEntity<>(response, HttpStatus.FOUND);
     }
 
     @ExceptionHandler(SQLException.class)
@@ -38,25 +81,6 @@ public class AppExceptionHandler {
         log.error("error", e);
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(DAODetailsNotFoundException.class)
-    public ResponseEntity<ExceptionResponse> detailsNotExistHandler(DAODetailsNotFoundException e) {
-        ExceptionResponse response = new ExceptionResponse();
-        response.setException(e.getClass().getSimpleName());
-        response.setErrorCode(e.getMessage());
-        String message = "";
-        switch (e.getMessage()) {
-            case "7":
-                message = "Clients Details don't exist";
-                break;
-            case "8":
-                message = "Doctor Details don't exist";
-                break;
-        }
-        response.setMessage(message);
-
-        return new ResponseEntity<>(response, HttpStatus.FOUND);
     }
 
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
@@ -87,41 +111,77 @@ public class AppExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.FOUND);
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ExceptionResponse> methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e) {
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        List<ExceptionResponse> list = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(error -> new ExceptionResponse("MethodArgumentNotValidException", error.getField() + " is incorrect...", "9"))
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(list, HttpStatus.BAD_REQUEST);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        ExceptionResponse response = new ExceptionResponse();
+        response.setException(ex.getClass().getSimpleName());
+        response.setErrorCode("405");
+        response.setMessage("Not allowed");
+        return new ResponseEntity<>(response, HttpStatus.METHOD_NOT_ALLOWED);
+    }
+
+    @ExceptionHandler(DAORecordException.class)
+    public ResponseEntity<ExceptionResponse> recordHandler(DAORecordException e) {
         ExceptionResponse response = new ExceptionResponse();
 
         response.setException(e.getClass().getSimpleName());
-        response.setErrorCode("9");
-
-        String message = e.getMessage();
-        String field = "";
-
-        if(message.contains("login")){
-            field = " in field with login";
-        } else if (message.contains("password")) {
-            field = " in field with password";
-        } else if(message.contains("email")){
-            field = " in field with email";
-        } else if(message.contains("'name'")){
-            field = " in field with name";
-        } else if(message.contains("surname")){
-            field = " in field with surname";
-        } else if(message.contains("address")){
-            field = " in field with address";
-        } else if(message.contains("dataBirth")){
-            field = " in field with data birthday";
-        } else if(message.contains("phoneNumber")){
-            field = " in field with phone number";
-        } else if(message.contains("doctorType")){
-            field = " in field with doctor type";
+        response.setErrorCode(e.getMessage());
+        String message = "";
+        switch (e.getMessage()) {
+            case "11":
+                message = "Can't update record. You may only delete it and make record again";
+                break;
+            case "12":
+                message = "Can't delete record which is done";
+                break;
+            case "13":
+                message = "Can't delete record which is confirmed. We can do it only after your call";
+                break;
         }
-
-        response.setMessage("Incorrect data" + field);
+        response.setMessage(message);
 
         log.error("error", e);
 
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(DAOIncorrectDataException.class)
+    public ResponseEntity<ExceptionResponse> incorrectDataDoctorTimetableHandler(DAOIncorrectDataException e) {
+        ExceptionResponse response = new ExceptionResponse();
+
+        response.setException(e.getClass().getSimpleName());
+        response.setErrorCode(e.getMessage());
+        String message = "";
+        switch (e.getMessage()) {
+            case "14":
+                message = "Incorrect day";
+                break;
+            case "15":
+                message = "Incorrect month";
+                break;
+            case "16":
+                message = "Incorrect year";
+                break;
+            case "19":
+                message = "Incorrect query data";
+                break;
+        }
+        response.setMessage(message);
+
+        log.error("error", e);
+
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
 
 }

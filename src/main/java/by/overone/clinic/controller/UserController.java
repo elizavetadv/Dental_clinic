@@ -5,12 +5,11 @@ import by.overone.clinic.dto.UserDataDTO;
 import by.overone.clinic.dto.UserRegistrationDTO;
 import by.overone.clinic.dto.UserUpdatedDTO;
 import by.overone.clinic.service.UserService;
-import by.overone.clinic.util.validation.exception.ValidationException;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
 import java.util.List;
 
 @RestController
@@ -20,20 +19,19 @@ public class UserController {
     private final UserService userService;
     private final UserDAO userDAO;
 
-    @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/add")
-    public void addUser(@Valid @RequestBody UserRegistrationDTO userRegistrationDTO) throws ValidationException {
+    @PostMapping("/")
+    public void addUser(@Valid @RequestBody UserRegistrationDTO userRegistrationDTO){
         userService.addUser(userRegistrationDTO);
     }
 
-    @PatchMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable long id) {
         userService.deleteUserById(id);
     }
 
-    @PatchMapping("/update")
-    public void updateUser(@Valid @RequestBody UserUpdatedDTO userUpdatedDTO) {
-        userService.updateUser(userUpdatedDTO);
+    @PatchMapping("/{id}")
+    public void updateUser(@PathVariable long id, @Valid @RequestBody UserUpdatedDTO userUpdatedDTO) {
+        userService.updateUser(id, userUpdatedDTO);
     }
 
     @GetMapping("/{id}")

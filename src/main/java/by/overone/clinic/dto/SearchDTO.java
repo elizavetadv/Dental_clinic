@@ -4,15 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Date;
-import java.sql.Time;
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RecordUpdatedDTO {
-    private long id_record;
+public class SearchDTO {
     private String doctorType;
-    private Date date;
-    private Time time;
+    private LocalDate date;
 }

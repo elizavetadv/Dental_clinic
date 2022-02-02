@@ -14,8 +14,6 @@ import javax.validation.constraints.Pattern;
 @NoArgsConstructor
 @Validated
 public class UserUpdatedDTO {
-    private long user_id;
-
     @NotBlank
     @Pattern(regexp = UserValidator.LOGIN_REGEX)
     private String login;

@@ -1,28 +1,29 @@
 package by.overone.clinic.service;
 
-import by.overone.clinic.dto.ClientAllDataDTO;
-import by.overone.clinic.dto.DoctorAllDataDTO;
+import by.overone.clinic.dto.*;
 import by.overone.clinic.model.ClientDetails;
 import by.overone.clinic.model.DoctorDetails;
 
 import java.util.List;
 
 public interface DetailsService {
-    void addClientDetails(long id, ClientDetails clientDetails);
+    void addClientDetails(long id, ClientDetailsDTO clientDetailsDTO);
 
-    void addDoctorDetails(long id, DoctorDetails doctorDetails);
+    void addDoctorDetails(long id, DoctorDetailsDTO doctorDetailsDTO);
 
-    void updateClientDetails(ClientDetails clientDetails);
+    void updateClientDetails(long id, ClientDetailsDTO clientDetailsDTO);
 
-    void updateDoctorDetails(DoctorDetails doctorDetails);
+    void updateDoctorDetails(long id, DoctorDetailsDTO doctorDetailsDTO);
 
-    ClientDetails getClientDetails(long id);
+    ClientDetailsDTO getClientDetails(long id);
 
-    DoctorDetails getDoctorDetails(long id);
+    DoctorDetailsDTO getDoctorDetails(long id);
 
-    List<DoctorDetails> getDoctorDetailsByType(String type);
+    List<DoctorDetailsDTO> getDoctorDetailsByType(String type);
 
     ClientAllDataDTO getAllClientData(long id);
 
     DoctorAllDataDTO getAllDoctorData(long id);
+
+    List<ClientRecordDTO> getClientRecord(long id);
 }

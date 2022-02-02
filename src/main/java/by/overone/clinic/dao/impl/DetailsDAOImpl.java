@@ -1,11 +1,11 @@
 package by.overone.clinic.dao.impl;
 
 import by.overone.clinic.dao.DetailsDAO;
-import by.overone.clinic.dto.ClientAllDataDTO;
-import by.overone.clinic.dto.DoctorAllDataDTO;
+import by.overone.clinic.dto.*;
 import by.overone.clinic.model.ClientDetails;
 import by.overone.clinic.model.DoctorDetails;
 import by.overone.clinic.model.Role;
+import by.overone.clinic.util.constant.ClientRecordConstant;
 import by.overone.clinic.util.constant.DetailsConstant;
 import by.overone.clinic.util.constant.UserConstant;
 import lombok.RequiredArgsConstructor;
@@ -67,35 +67,37 @@ public class DetailsDAOImpl implements DetailsDAO {
             " ON " + UserConstant.TABLE_USER + "." + UserConstant.USER_ID + "=" + DetailsConstant.TABLE_DOCTOR + "." +
             DetailsConstant.DOCTOR_ID + " WHERE " + UserConstant.STATUS + "='ACTIVE' AND " + UserConstant.USER_ID + "=?";
 
+    private final static String GET_CLIENT_RECORDS_QUERY = "SELECT * FROM " + ClientRecordConstant.TABLE_CLIENT_RECORD +
+            " WHERE " + ClientRecordConstant.CLIENT_ID + "=?";
+
     @Transactional
     @Override
-    public void addClientDetails(long id, ClientDetails userDetails) {
-        jdbcTemplate.update(ADD_CLIENT_DETAILS_QUERY, id, userDetails.getName(), userDetails.getSurname(), userDetails.getAddress(),
-                userDetails.getDataBirth(), userDetails.getPhoneNumber());
+    public void addClientDetails(long id, ClientDetailsDTO clientDetailsDTO) {
+        jdbcTemplate.update(ADD_CLIENT_DETAILS_QUERY, id, clientDetailsDTO.getName(), clientDetailsDTO.getSurname(),
+                clientDetailsDTO.getAddress(), clientDetailsDTO.getDataBirth(), clientDetailsDTO.getPhoneNumber());
 
         jdbcTemplate.update(UPDATE_USER_ROLE_QUERY, Role.CLIENT.toString(), id);
     }
 
     @Transactional
     @Override
-    public void addDoctorDetails(long id, DoctorDetails doctorDetails) {
-        //checking by admin
-        jdbcTemplate.update(ADD_DOCTOR_DETAILS_QUERY, id, doctorDetails.getName(), doctorDetails.getSurname(),
-                doctorDetails.getDoctorType());
+    public void addDoctorDetails(long id, DoctorDetailsDTO doctorDetailsDTO) {
+        jdbcTemplate.update(ADD_DOCTOR_DETAILS_QUERY, id, doctorDetailsDTO.getName(), doctorDetailsDTO.getSurname(),
+                doctorDetailsDTO.getDoctorType());
 
         jdbcTemplate.update(UPDATE_USER_ROLE_QUERY, Role.DOCTOR.toString(), id);
     }
 
     @Override
-    public void updateClientDetails(ClientDetails clientDetails) {
-        jdbcTemplate.update(UPDATE_CLIENT_DETAILS_QUERY, clientDetails.getName(), clientDetails.getSurname(),
-                clientDetails.getAddress(), clientDetails.getDataBirth(), clientDetails.getPhoneNumber(), clientDetails.getClient_user_id());
+    public void updateClientDetails(long id, ClientDetailsDTO clientDetailsDTO) {
+        jdbcTemplate.update(UPDATE_CLIENT_DETAILS_QUERY, clientDetailsDTO.getName(), clientDetailsDTO.getSurname(),
+                clientDetailsDTO.getAddress(), clientDetailsDTO.getDataBirth(), clientDetailsDTO.getPhoneNumber(), id);
     }
 
     @Override
-    public void updateDoctorDetails(DoctorDetails doctorDetails) {
-        jdbcTemplate.update(UPDATE_DOCTOR_DETAILS_QUERY, doctorDetails.getName(), doctorDetails.getSurname(),
-                doctorDetails.getDoctorType(), doctorDetails.getDoctor_user_id());
+    public void updateDoctorDetails(long id, DoctorDetailsDTO doctorDetailsDTO) {
+        jdbcTemplate.update(UPDATE_DOCTOR_DETAILS_QUERY, doctorDetailsDTO.getName(), doctorDetailsDTO.getSurname(),
+                doctorDetailsDTO.getDoctorType(), id);
     }
 
     @Override
@@ -123,5 +125,10 @@ public class DetailsDAOImpl implements DetailsDAO {
     @Override
     public DoctorAllDataDTO getAllDoctorData(long id) {
         return jdbcTemplate.query(GET_ALL_DOCTOR_DATA_QUERY,  new Object[]{id}, new BeanPropertyRowMapper<>(DoctorAllDataDTO.class)).get(0);
+    }
+
+    @Override
+    public List<ClientRecordDTO> getClientRecord(long id) {
+        return jdbcTemplate.query(GET_CLIENT_RECORDS_QUERY, new Object[]{id}, new BeanPropertyRowMapper<>(ClientRecordDTO.class));
     }
 }

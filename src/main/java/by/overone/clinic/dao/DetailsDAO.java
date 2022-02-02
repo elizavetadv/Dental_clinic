@@ -1,20 +1,19 @@
 package by.overone.clinic.dao;
 
-import by.overone.clinic.dto.ClientAllDataDTO;
-import by.overone.clinic.dto.DoctorAllDataDTO;
+import by.overone.clinic.dto.*;
 import by.overone.clinic.model.ClientDetails;
 import by.overone.clinic.model.DoctorDetails;
 
 import java.util.List;
 
 public interface DetailsDAO {
-    void addClientDetails(long id, ClientDetails userDetails);
+    void addClientDetails(long id, ClientDetailsDTO clientDetailsDTO);
 
-    void addDoctorDetails(long id, DoctorDetails doctorDetails);
+    void addDoctorDetails(long id, DoctorDetailsDTO doctorDetailsDTO);
 
-    void updateClientDetails(ClientDetails clientDetails);
+    void updateClientDetails(long id, ClientDetailsDTO clientDetailsDTO);
 
-    void updateDoctorDetails(DoctorDetails doctorDetails);
+    void updateDoctorDetails(long id, DoctorDetailsDTO doctorDetailsDTO);
 
     ClientDetails getClientDetails(long id);
 
@@ -25,4 +24,6 @@ public interface DetailsDAO {
     ClientAllDataDTO getAllClientData(long id);
 
     DoctorAllDataDTO getAllDoctorData(long id);
+
+    List<ClientRecordDTO> getClientRecord(long id);
 }

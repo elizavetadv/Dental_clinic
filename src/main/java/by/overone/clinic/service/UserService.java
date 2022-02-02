@@ -3,17 +3,15 @@ package by.overone.clinic.service;
 import by.overone.clinic.dto.UserDataDTO;
 import by.overone.clinic.dto.UserRegistrationDTO;
 import by.overone.clinic.dto.UserUpdatedDTO;
-import by.overone.clinic.util.validation.exception.ValidationException;
 
 import java.util.List;
 
 public interface UserService {
-
-    void addUser(UserRegistrationDTO userRegistrationDTO) throws ValidationException;
+    void addUser(UserRegistrationDTO userRegistrationDTO);
 
     void deleteUserById(long id);
 
-    void updateUser(UserUpdatedDTO userUpdatedDTO);
+    void updateUser(long id, UserUpdatedDTO userUpdatedDTO);
 
     UserDataDTO getUserById(long id);
 

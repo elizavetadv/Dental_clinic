@@ -7,13 +7,12 @@ import java.sql.Time;
 import java.time.LocalDate;
 
 @Data
-public class Record {
-    private long id_record;
-    private String doctorType;
+public class ClientRecord {
+    private long client_record_id;
+    private String doctor_surname;
+    private String doctor_type;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
     private Time time;
-    private String status;
-    private long user_user_id;
-    private long doctor_id;
+    private long client_details_client_user_id;
 }

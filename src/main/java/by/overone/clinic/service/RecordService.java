@@ -1,7 +1,6 @@
 package by.overone.clinic.service;
 
 import by.overone.clinic.dto.RecordDTO;
-import by.overone.clinic.dto.RecordUpdatedDTO;
 import by.overone.clinic.model.Record;
 
 import java.util.List;
@@ -11,15 +10,15 @@ public interface RecordService {
 
     void deleteRecord(long id);
 
-    void updateRecord(RecordUpdatedDTO recordUpdatedDTO);
+    void updateRecord(long id, RecordDTO recordDTO);
 
-    List<Record> getAllRecords();
+    List<RecordDTO> getAllRecords();
 
     Record getRecordById(long id);
 
-    Record getRecordByClientId(long id);
+    List<RecordDTO> getRecordByClientId(long id);
 
-    Record getRecordByDoctorId(long id);
+    List<RecordDTO> getRecordByDoctorId(long id);
 
     List<Record> getRecordByStatus(String status);
 }

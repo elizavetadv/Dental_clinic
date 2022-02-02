@@ -1,12 +1,12 @@
 package by.overone.clinic.controller;
 
 import by.overone.clinic.dto.RecordDTO;
-import by.overone.clinic.dto.RecordUpdatedDTO;
 import by.overone.clinic.model.Record;
 import by.overone.clinic.service.RecordService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -14,25 +14,24 @@ import java.util.List;
 @RequestMapping("/api/records")
 public class RecordController {
     private final RecordService recordService;
-//    private final RecordDAO recordDAO;
 
-    @PostMapping("/add/{id}")
-    public void addRecord(@PathVariable long id, @RequestBody RecordDTO recordDTO) {
+    @PostMapping("/{id}")
+    public void addRecord(@PathVariable long id, @Valid @RequestBody RecordDTO recordDTO) {
         recordService.makeRecord(id, recordDTO);
     }
 
-    @PatchMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public void deleteRecord(@PathVariable long id) {
         recordService.deleteRecord(id);
     }
 
-    @PatchMapping("/update")
-    public void updateRecord(@RequestBody RecordUpdatedDTO recordUpdatedDTO) {
-        recordService.updateRecord(recordUpdatedDTO);
+    @PatchMapping("/{id}")
+    public void updateRecord(@PathVariable long id, @RequestBody RecordDTO recordDTO) {
+        recordService.updateRecord(id, recordDTO);
     }
 
     @GetMapping
-    public List<Record> getAllRecords() {
+    public List<RecordDTO> getAllRecords() {
         return recordService.getAllRecords();
     }
 
@@ -42,12 +41,12 @@ public class RecordController {
     }
 
     @GetMapping("/client/{id}")
-    public Record getRecordByClientId(@PathVariable long id) {
+    public List<RecordDTO> getRecordByClientId(@PathVariable long id) {
         return recordService.getRecordByClientId(id);
     }
 
     @GetMapping("/doctor/{id}")
-    public Record getRecordByDoctorId(@PathVariable long id) {
+    public List<RecordDTO> getRecordByDoctorId(@PathVariable long id) {
         return recordService.getRecordByDoctorId(id);
     }
 

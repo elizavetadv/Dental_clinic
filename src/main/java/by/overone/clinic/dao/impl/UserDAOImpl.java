@@ -1,6 +1,7 @@
 package by.overone.clinic.dao.impl;
 
 import by.overone.clinic.dao.UserDAO;
+import by.overone.clinic.dto.UserRegistrationDTO;
 import by.overone.clinic.dto.UserUpdatedDTO;
 import by.overone.clinic.model.Role;
 import by.overone.clinic.model.Status;
@@ -9,6 +10,7 @@ import by.overone.clinic.util.constant.DetailsConstant;
 import by.overone.clinic.util.constant.UserConstant;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -57,9 +59,9 @@ public class UserDAOImpl implements UserDAO {
             " WHERE status='ACTIVE' AND " + "doctor_details.surname=? OR client_details.surname=?";
 
     @Override
-    public void addUser(User user) {
-        jdbcTemplate.update(ADD_USER_QUERY, user.getLogin(), user.getPassword(), user.getEmail(), Role.USER.toString(),
-                Status.ACTIVE.toString());
+    public void addUser(UserRegistrationDTO userRegistrationDTO) {
+        jdbcTemplate.update(ADD_USER_QUERY, userRegistrationDTO.getLogin(), DigestUtils.md5Hex(userRegistrationDTO.getPassword()),
+                userRegistrationDTO.getEmail(), Role.USER.toString(), Status.ACTIVE.toString());
     }
 
     @Override
@@ -68,9 +70,9 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public void updateUser(UserUpdatedDTO userUpdatedDTO) {
-        jdbcTemplate.update(UPDATE_USER_QUERY, userUpdatedDTO.getLogin(), Hex.encodeHexString(userUpdatedDTO.getPassword().getBytes()),
-                userUpdatedDTO.getEmail(), userUpdatedDTO.getUser_id());
+    public void updateUser(long id, UserUpdatedDTO userUpdatedDTO) {
+        jdbcTemplate.update(UPDATE_USER_QUERY, userUpdatedDTO.getLogin(), DigestUtils.md5Hex(userUpdatedDTO.getPassword()),
+                userUpdatedDTO.getEmail(), id);
     }
 
     @Override
@@ -109,5 +111,4 @@ public class UserDAOImpl implements UserDAO {
     public Optional<User> getUserBySurname(String surname) {
         return jdbcTemplate.query(GET_USERS_BY_SURNAME_QUERY, new Object[]{surname, surname}, new BeanPropertyRowMapper<>(User.class)).stream().findAny();
     }
-
 }

@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ClientAllDataDTO {
-    private long user_id;
     private String login;
     private String email;
     private String name;
