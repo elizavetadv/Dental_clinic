@@ -1,6 +1,5 @@
 package by.overone.clinic.dao;
 
-import by.overone.clinic.dto.ClientRecordDTO;
 import by.overone.clinic.dto.UserRegistrationDTO;
 import by.overone.clinic.dto.UserUpdatedDTO;
 import by.overone.clinic.model.User;

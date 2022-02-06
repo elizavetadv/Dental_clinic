@@ -8,7 +8,6 @@
 <table cellpadding="5", border="1", cellspacing="0">
 <thead>
 <tr>
-<th> id </th>
 <th> login </th>
 <th> email </th>
 </tr>
@@ -17,7 +16,6 @@
 <tbody>
 <c:forEach items="${users}" var="user">
 <tr>
-<td> ${user.user_id} </td>
 <td> ${user.login} </td>
 <td> ${user.email} </td>
 </tr>

@@ -1,6 +1,8 @@
 package by.overone.clinic.controller.exception;
 
-import by.overone.clinic.dao.exception.*;
+import by.overone.clinic.dao.exception.DAOIncorrectDataException;
+import by.overone.clinic.dao.exception.DAONotExistException;
+import by.overone.clinic.dao.exception.DAORecordException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
@@ -26,44 +28,12 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 
     private final MessageSource messageSource;
 
-//    @ExceptionHandler(DAOUserNotFoundException.class)
-//    public ResponseEntity<ExceptionResponse> userNotFoundHandler(DAOUserNotFoundException e, WebRequest webRequest) {
-//        ExceptionResponse response = new ExceptionResponse();
-//
-//        response.setException(e.getClass().getSimpleName());
-//        response.setErrorCode(e.getMessage());
-//        response.setMessage(messageSource.getMessage(e.getMessage(), new Object[]{"aa", "bb"}, webRequest.getLocale()));
-//
-//        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-//    }
-
     @ExceptionHandler(DAONotExistException.class)
-    public ResponseEntity<ExceptionResponse> notExistHandler(DAONotExistException e) {
+    public ResponseEntity<ExceptionResponse> notExistHandler(DAONotExistException e, WebRequest webRequest) {
         ExceptionResponse response = new ExceptionResponse();
         response.setException(e.getClass().getSimpleName());
         response.setErrorCode(e.getMessage());
-        String message = "";
-        switch (e.getMessage()) {
-            case "2":
-                message = "User not found";
-                break;
-            case "7":
-                message = "Client Details not found";
-                break;
-            case "8":
-                message = "Doctor Details not found";
-                break;
-            case "10":
-                message = "Record not found";
-                break;
-            case "17":
-                message = "Reception not found";
-                break;
-            case "18":
-                message = "Record not made. Time is busy. Please choose another";
-                break;
-        }
-        response.setMessage(message);
+        response.setMessage(messageSource.getMessage(e.getMessage(), null, webRequest.getLocale()));
 
         log.error("error", e);
 
@@ -112,11 +82,13 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers,
+                                                                  HttpStatus status, WebRequest request) {
         List<ExceptionResponse> list = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
-                .map(error -> new ExceptionResponse("MethodArgumentNotValidException", error.getField() + " is incorrect...", "9"))
+                .map(error -> new ExceptionResponse("MethodArgumentNotValidException", error.getField()
+                        + " is incorrect...", "9"))
                 .collect(Collectors.toList());
         return new ResponseEntity<>(list, HttpStatus.BAD_REQUEST);
     }
@@ -131,24 +103,12 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(DAORecordException.class)
-    public ResponseEntity<ExceptionResponse> recordHandler(DAORecordException e) {
+    public ResponseEntity<ExceptionResponse> recordHandler(DAORecordException e, WebRequest webRequest) {
         ExceptionResponse response = new ExceptionResponse();
 
         response.setException(e.getClass().getSimpleName());
         response.setErrorCode(e.getMessage());
-        String message = "";
-        switch (e.getMessage()) {
-            case "11":
-                message = "Can't update record. You may only delete it and make record again";
-                break;
-            case "12":
-                message = "Can't delete record which is done";
-                break;
-            case "13":
-                message = "Can't delete record which is confirmed. We can do it only after your call";
-                break;
-        }
-        response.setMessage(message);
+        response.setMessage(messageSource.getMessage(e.getMessage(), null, webRequest.getLocale()));
 
         log.error("error", e);
 
@@ -156,27 +116,12 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(DAOIncorrectDataException.class)
-    public ResponseEntity<ExceptionResponse> incorrectDataDoctorTimetableHandler(DAOIncorrectDataException e) {
+    public ResponseEntity<ExceptionResponse> incorrectDataDoctorTimetableHandler(DAOIncorrectDataException e, WebRequest webRequest) {
         ExceptionResponse response = new ExceptionResponse();
 
         response.setException(e.getClass().getSimpleName());
         response.setErrorCode(e.getMessage());
-        String message = "";
-        switch (e.getMessage()) {
-            case "14":
-                message = "Incorrect day";
-                break;
-            case "15":
-                message = "Incorrect month";
-                break;
-            case "16":
-                message = "Incorrect year";
-                break;
-            case "19":
-                message = "Incorrect query data";
-                break;
-        }
-        response.setMessage(message);
+        response.setMessage(messageSource.getMessage(e.getMessage(), null, webRequest.getLocale()));
 
         log.error("error", e);
 

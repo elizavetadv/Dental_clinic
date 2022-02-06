@@ -4,7 +4,6 @@ import by.overone.clinic.controller.exception.ExceptionCode;
 import by.overone.clinic.dao.UserDAO;
 import by.overone.clinic.dao.exception.DAOIncorrectDataException;
 import by.overone.clinic.dao.exception.DAONotExistException;
-import by.overone.clinic.dao.exception.DAOUserNotFoundException;
 import by.overone.clinic.dto.UserDataDTO;
 import by.overone.clinic.dto.UserRegistrationDTO;
 import by.overone.clinic.dto.UserUpdatedDTO;

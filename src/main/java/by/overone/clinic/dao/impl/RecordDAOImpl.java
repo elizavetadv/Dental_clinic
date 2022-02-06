@@ -5,7 +5,6 @@ import by.overone.clinic.dao.ReceptionDAO;
 import by.overone.clinic.dao.RecordDAO;
 import by.overone.clinic.dao.exception.DAONotExistException;
 import by.overone.clinic.dao.exception.DAORecordException;
-import by.overone.clinic.dao.exception.DAORecordNotFoundException;
 import by.overone.clinic.dto.RecordDTO;
 import by.overone.clinic.model.Record;
 import by.overone.clinic.model.RecordStatus;

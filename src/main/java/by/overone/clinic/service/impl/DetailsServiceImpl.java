@@ -3,7 +3,6 @@ package by.overone.clinic.service.impl;
 import by.overone.clinic.controller.exception.ExceptionCode;
 import by.overone.clinic.dao.DetailsDAO;
 import by.overone.clinic.dao.UserDAO;
-import by.overone.clinic.dao.exception.DAODetailsNotFoundException;
 import by.overone.clinic.dao.exception.DAOIncorrectDataException;
 import by.overone.clinic.dao.exception.DAONotExistException;
 import by.overone.clinic.dto.*;

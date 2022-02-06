@@ -3,10 +3,8 @@ package by.overone.clinic.service.impl;
 import by.overone.clinic.controller.exception.ExceptionCode;
 import by.overone.clinic.dao.RecordDAO;
 import by.overone.clinic.dao.UserDAO;
-import by.overone.clinic.dao.exception.DAODetailsNotFoundException;
 import by.overone.clinic.dao.exception.DAOIncorrectDataException;
 import by.overone.clinic.dao.exception.DAONotExistException;
-import by.overone.clinic.dao.exception.DAOUserNotFoundException;
 import by.overone.clinic.dto.RecordDTO;
 import by.overone.clinic.model.Record;
 import by.overone.clinic.model.RecordStatus;
@@ -27,7 +25,7 @@ public class RecordServiceImpl implements RecordService {
 
     @Override
     public void makeRecord(long id, RecordDTO recordDTO) {
-        userDAO.getUserById(id).orElseThrow(() -> new DAOUserNotFoundException(ExceptionCode.NOT_EXISTING_USER.getErrorCode()));
+        userDAO.getUserById(id).orElseThrow(() -> new DAONotExistException(ExceptionCode.NOT_EXISTING_USER.getErrorCode()));
 
         if(!userDAO.getUser(id).getRole().equals(Role.CLIENT.toString())){
             throw new DAONotExistException(ExceptionCode.NOT_EXISTING_CLIENT_DETAILS.getErrorCode());
