@@ -88,8 +88,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDataDTO getUserBySurname(String surname) {
-        User user = userDAO.getUserBySurname(surname).orElseThrow(() -> new DAONotExistException(ExceptionCode.NOT_EXISTING_USER.getErrorCode()));
-        return modelMapper.map(user, UserDataDTO.class);
+    public List<UserDataDTO> getUserBySurname(String surname) {
+        List<User> users = userDAO.getUserBySurname(surname);
+        if(users.isEmpty()){
+            throw new DAONotExistException(ExceptionCode.NOT_EXISTING_USER.getErrorCode());
+        } else {
+            return users.stream()
+                    .map(user -> new UserDataDTO(user.getLogin(), user.getEmail()))
+                    .collect(Collectors.toList());
+        }
     }
 }

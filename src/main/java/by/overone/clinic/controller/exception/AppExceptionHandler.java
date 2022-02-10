@@ -14,6 +14,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.sql.SQLException;
@@ -94,7 +95,9 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
-    protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex,
+                                                                         HttpHeaders headers, HttpStatus status,
+                                                                         WebRequest request) {
         ExceptionResponse response = new ExceptionResponse();
         response.setException(ex.getClass().getSimpleName());
         response.setErrorCode("405");
@@ -116,7 +119,8 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(DAOIncorrectDataException.class)
-    public ResponseEntity<ExceptionResponse> incorrectDataDoctorTimetableHandler(DAOIncorrectDataException e, WebRequest webRequest) {
+    public ResponseEntity<ExceptionResponse> incorrectDataDoctorTimetableHandler(DAOIncorrectDataException e,
+                                                                                 WebRequest webRequest) {
         ExceptionResponse response = new ExceptionResponse();
 
         response.setException(e.getClass().getSimpleName());
@@ -128,5 +132,13 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
-
+    @Override
+    protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers,
+                                                                   HttpStatus status, WebRequest request) {
+        ExceptionResponse response = new ExceptionResponse();
+        response.setException(ex.getClass().getSimpleName());
+        response.setMessage("Incorrect url");
+        response.setErrorCode("20");
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
 }

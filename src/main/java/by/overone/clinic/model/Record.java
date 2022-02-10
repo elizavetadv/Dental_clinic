@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 @Data
 public class Record {
-    private long id_record;
+    private long idRecord;
     private String doctorType;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
