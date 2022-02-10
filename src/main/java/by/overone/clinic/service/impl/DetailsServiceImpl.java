@@ -59,7 +59,7 @@ public class DetailsServiceImpl implements DetailsService {
     @Override
     public ClientDetailsDTO getClientDetails(long id) {
         userService.getUserById(id);
-        if(!userDAO.getUser(id).getRole().equals(Role.CLIENT.toString())){
+        if(!userDAO.getUserById(id).get().getRole().equals(Role.CLIENT.toString())){
             throw new DAONotExistException(ExceptionCode.NOT_EXISTING_CLIENT_DETAILS.getErrorCode());
         }
         return modelMapper.map(detailsDAO.getClientDetails(id), ClientDetailsDTO.class);
@@ -68,7 +68,7 @@ public class DetailsServiceImpl implements DetailsService {
     @Override
     public DoctorDetailsDTO getDoctorDetails(long id) {
         userService.getUserById(id);
-        if(!userDAO.getUser(id).getRole().equals(Role.DOCTOR.toString())){
+        if(!userDAO.getUserById(id).get().getRole().equals(Role.DOCTOR.toString())){
             throw new DAONotExistException(ExceptionCode.NOT_EXISTING_DOCTOR_DETAILS.getErrorCode());
         }
         return modelMapper.map(detailsDAO.getDoctorDetails(id), DoctorDetailsDTO.class);
@@ -90,7 +90,7 @@ public class DetailsServiceImpl implements DetailsService {
     @Override
     public ClientAllDataDTO getAllClientData(long id) {
         userService.getUserById(id);
-        if(!userDAO.getUser(id).getRole().equals(Role.CLIENT.toString())){
+        if(!userDAO.getUserById(id).get().getRole().equals(Role.CLIENT.toString())){
             throw new DAONotExistException(ExceptionCode.NOT_EXISTING_CLIENT_DETAILS.getErrorCode());
         }
         return detailsDAO.getAllClientData(id);
@@ -99,7 +99,7 @@ public class DetailsServiceImpl implements DetailsService {
     @Override
     public DoctorAllDataDTO getAllDoctorData(long id) {
         userService.getUserById(id);
-        if(!userDAO.getUser(id).getRole().equals(Role.DOCTOR.toString())){
+        if(!userDAO.getUserById(id).get().getRole().equals(Role.DOCTOR.toString())){
             throw new DAONotExistException(ExceptionCode.NOT_EXISTING_DOCTOR_DETAILS.getErrorCode());
         }
         return detailsDAO.getAllDoctorData(id);

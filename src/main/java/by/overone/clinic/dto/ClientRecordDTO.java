@@ -12,8 +12,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ClientRecordDTO {
-    private String doctor_surname;
-    private String doctor_type;
+    private String doctorSurname;
+    private String doctorType;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
     private Time time;

@@ -8,8 +8,9 @@ import by.overone.clinic.dao.exception.DAONotExistException;
 import by.overone.clinic.dto.RecordDTO;
 import by.overone.clinic.model.Record;
 import by.overone.clinic.model.RecordStatus;
-import by.overone.clinic.model.Role;
+import by.overone.clinic.service.DetailsService;
 import by.overone.clinic.service.RecordService;
+import by.overone.clinic.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,16 +22,15 @@ public class RecordServiceImpl implements RecordService {
     RecordDAO recordDAO;
 
     @Autowired
-    UserDAO userDAO;
+    UserService userService;
+
+    @Autowired
+    DetailsService detailsService;
 
     @Override
     public void makeRecord(long id, RecordDTO recordDTO) {
-        userDAO.getUserById(id).orElseThrow(() -> new DAONotExistException(ExceptionCode.NOT_EXISTING_USER.getErrorCode()));
-
-        if(!userDAO.getUser(id).getRole().equals(Role.CLIENT.toString())){
-            throw new DAONotExistException(ExceptionCode.NOT_EXISTING_CLIENT_DETAILS.getErrorCode());
-        }
-
+        userService.getUserById(id);
+        detailsService.getClientDetails(id);
         recordDAO.makeRecord(id, recordDTO);
     }
 

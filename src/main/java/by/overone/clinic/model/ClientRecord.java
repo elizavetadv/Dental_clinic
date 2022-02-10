@@ -8,11 +8,11 @@ import java.time.LocalDate;
 
 @Data
 public class ClientRecord {
-    private long client_record_id;
-    private String doctor_surname;
-    private String doctor_type;
+    private long clientRecordId;
+    private String doctorSurname;
+    private String doctorType;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
     private Time time;
-    private long client_details_client_user_id;
+    private long clientId;
 }

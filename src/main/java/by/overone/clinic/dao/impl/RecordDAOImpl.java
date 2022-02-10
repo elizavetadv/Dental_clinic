@@ -11,6 +11,7 @@ import by.overone.clinic.model.RecordStatus;
 import by.overone.clinic.util.constant.RecordConstant;
 import by.overone.clinic.util.constant.UserConstant;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -57,7 +58,6 @@ public class RecordDAOImpl implements RecordDAO {
 
     @Override
     public void makeRecord(long id, RecordDTO recordDTO) {
-        ReceptionDAO receptionDAO = new ReceptionDAOImpl(jdbcTemplate, new DetailsDAOImpl(jdbcTemplate));
         List<Time> times = receptionDAO.getDoctorFreeTime(recordDTO.getDoctorType(), recordDTO.getDate());
 
         if (!times.contains(recordDTO.getTime())) {
@@ -65,9 +65,8 @@ public class RecordDAOImpl implements RecordDAO {
         } else {
             jdbcTemplate.update(ADD_RECORD_QUERY, recordDTO.getDoctorType(), recordDTO.getDate(), recordDTO.getTime(),
                     RecordStatus.WAITING.toString(), id);
-
             receptionDAO.addReception(jdbcTemplate.query(GET_RECORD_BY_CLIENT_ID_DATE_TIME_QUERY, new Object[]{id, recordDTO.getDate(),
-                    recordDTO.getTime()}, new BeanPropertyRowMapper<>(Record.class)).get(0).getId_record());
+                    recordDTO.getTime()}, new BeanPropertyRowMapper<>(Record.class)).get(0).getIdRecord());
         }
     }
 

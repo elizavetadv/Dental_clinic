@@ -9,16 +9,11 @@ import by.overone.clinic.model.User;
 import by.overone.clinic.util.constant.DetailsConstant;
 import by.overone.clinic.util.constant.UserConstant;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,7 +26,7 @@ public class UserDAOImpl implements UserDAO {
     private final static String ADD_USER_QUERY = "INSERT INTO " + UserConstant.TABLE_USER + " VALUE (0, ?, ?, ?, ?, ?)";
 
     private final static String DELETE_USER_BY_ID_QUERY = "UPDATE " + UserConstant.TABLE_USER + " SET " +
-        UserConstant.STATUS + "='DELETED' WHERE " + UserConstant.USER_ID + "=?";
+            UserConstant.STATUS + "='DELETED' WHERE " + UserConstant.USER_ID + "=?";
 
     private final static String UPDATE_USER_QUERY = "UPDATE " + UserConstant.TABLE_USER + " SET " +
             UserConstant.LOGIN + "=COALESCE(?," + UserConstant.LOGIN + "), " +
@@ -40,10 +35,7 @@ public class UserDAOImpl implements UserDAO {
             "WHERE " + UserConstant.USER_ID + "=?";
 
     private final static String GET_USER_BY_ID_QUERY = "SELECT * FROM " + UserConstant.TABLE_USER + " WHERE " +
-        UserConstant.USER_ID + "=? AND " + UserConstant.STATUS + "='ACTIVE'";
-
-    private final static String GET_USER_QUERY = "SELECT * FROM " + UserConstant.TABLE_USER + " WHERE " +
-        UserConstant.USER_ID + "=? AND " + UserConstant.STATUS + "='ACTIVE'";
+            UserConstant.USER_ID + "=? AND " + UserConstant.STATUS + "='ACTIVE'";
 
     private final static String GET_ALL_USERS_QUERY = "SELECT * FROM " + UserConstant.TABLE_USER;
 
@@ -81,20 +73,8 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public User getUser(long id) {
-        return jdbcTemplate.query(GET_USER_QUERY, new Object[]{id}, new BeanPropertyRowMapper<>(User.class)).get(0);
-    }
-
-//    @PersistenceContext
-//    private EntityManager entityManager;
-
-    @Override
     public List<User> getAllUsers() {
         return jdbcTemplate.query(GET_ALL_USERS_QUERY, new BeanPropertyRowMapper<>(User.class));
-//        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-//        CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
-//        criteriaQuery.from(User.class);
-//        return entityManager.createQuery(criteriaQuery).getResultList();
     }
 
     @Override
@@ -108,7 +88,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public Optional<User> getUserBySurname(String surname) {
-        return jdbcTemplate.query(GET_USERS_BY_SURNAME_QUERY, new Object[]{surname, surname}, new BeanPropertyRowMapper<>(User.class)).stream().findAny();
+    public List<User> getUserBySurname(String surname) {
+        return jdbcTemplate.query(GET_USERS_BY_SURNAME_QUERY, new Object[]{surname, surname}, new BeanPropertyRowMapper<>(User.class));
     }
 }

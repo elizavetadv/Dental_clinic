@@ -17,7 +17,6 @@ import java.util.List;
 @RequestMapping("/api/details")
 public class DetailsController {
     private final DetailsService detailsService;
-    private final DetailsDAO detailsDAO;
 
     @Transactional
     @PostMapping("/{id}")

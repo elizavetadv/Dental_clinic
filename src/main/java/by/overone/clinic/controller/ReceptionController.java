@@ -1,6 +1,9 @@
 package by.overone.clinic.controller;
 
+import by.overone.clinic.dao.ReceptionDAO;
+import by.overone.clinic.dao.impl.ReceptionDAOImpl;
 import by.overone.clinic.dto.SearchDTO;
+import by.overone.clinic.model.Reception;
 import by.overone.clinic.service.ReceptionService;
 import lombok.AllArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,5 +32,11 @@ public class ReceptionController {
     @PatchMapping("/")
     public void updateRecordDone() {
         receptionService.updateRecordDone();
+    }
+
+    private final ReceptionDAO receptionDAO;
+    @GetMapping("/r/{id}")
+    public Reception getReception(@PathVariable long id){
+        return receptionDAO.getById(id);
     }
 }

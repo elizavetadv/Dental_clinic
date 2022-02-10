@@ -55,7 +55,7 @@ public class UserController {
     }
 
     @GetMapping("/surname/{surname}")
-    public UserDataDTO getUserBySurname(@PathVariable String surname) {
+    public List<UserDataDTO> getUserBySurname(@PathVariable String surname) {
         return userService.getUserBySurname(surname);
     }
 }

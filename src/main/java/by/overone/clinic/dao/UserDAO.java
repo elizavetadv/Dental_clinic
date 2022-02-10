@@ -17,13 +17,11 @@ public interface UserDAO {
 
     Optional<User> getUserById(long id);
 
-    User getUser(long id);
-
     List<User> getAllUsers();
 
     List<User> getAllUsersByStatus(String status);
 
     List<User> getAllUsersByRole(String role);
 
-    Optional<User> getUserBySurname(String surname);
+    List<User> getUserBySurname(String surname);
 }

@@ -21,6 +21,6 @@ public interface UserService {
 
     List<UserDataDTO> getAllUsersByRole(String role);
 
-    UserDataDTO getUserBySurname(String surname);
+    List<UserDataDTO> getUserBySurname(String surname);
 
 }

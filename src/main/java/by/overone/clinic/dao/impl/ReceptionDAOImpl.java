@@ -75,6 +75,7 @@ public class ReceptionDAOImpl implements ReceptionDAO {
         RecordDAO recordDAO = new RecordDAOImpl(jdbcTemplate, new ReceptionDAOImpl(jdbcTemplate, new DetailsDAOImpl(jdbcTemplate)));
 
         Record record = recordDAO.getRecordById(recordId);
+        log.info(String.valueOf(record.getUser_user_id()));
         jdbcTemplate.update(ADD_RECEPTION_QUERY, recordId, record.getUser_user_id());
     }
 
@@ -94,7 +95,7 @@ public class ReceptionDAOImpl implements ReceptionDAO {
                 new Object[]{findDoctorId(doctorType), date}, new BeanPropertyRowMapper<>(DocTimetableDTO.class));
         List<Record> busyInRecords = jdbcTemplate.query(GET_BUSY_TIME_RECORDS_QUERY, new Object[]{doctorType, date},
                 new BeanPropertyRowMapper<>(Record.class));
-        log.info(busyInRecords + "");
+
         List<DocTimetableDTO> all = jdbcTemplate.query(GET_ALL_DOCTOR_TIME_QUERY, new BeanPropertyRowMapper<>(DocTimetableDTO.class));
         List<Time> free = new ArrayList<>();
         List<Time> free1 = free;
@@ -149,8 +150,10 @@ public class ReceptionDAOImpl implements ReceptionDAO {
         long idDoctor = findDoctorId(record.getDoctorType());
         long idClient = record.getUser_user_id();
 
-        reception.setDoctor_id(idDoctor);
-        reception.setClient_id(idClient);
+        log.info(String.valueOf(record.getUser_user_id()));
+
+        reception.setDoctorId(idDoctor);
+        reception.setClientId(idClient);
 
         log.info("before checking date and time: " + checkDateAndTime(idDoctor, record.getDate(), record.getTime()));
 
@@ -174,7 +177,7 @@ public class ReceptionDAOImpl implements ReceptionDAO {
             jdbcTemplate.update(ADD_CLIENT_RECORD_QUERY, doctorDetails.getSurname(), doctorDetails.getDoctorType(),
                     record.getDate(), record.getTime(), idClient);
 
-            jdbcTemplate.update(UPDATE_RECEPTION_QUERY, idDoctor, reception.getId_reception());
+            jdbcTemplate.update(UPDATE_RECEPTION_QUERY, idDoctor, reception.getIdReception());
         }
     }
 
