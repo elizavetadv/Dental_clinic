@@ -1,7 +1,6 @@
 package by.overone.clinic.controller;
 
 import by.overone.clinic.dao.ReceptionDAO;
-import by.overone.clinic.dao.impl.ReceptionDAOImpl;
 import by.overone.clinic.dto.SearchDTO;
 import by.overone.clinic.model.Reception;
 import by.overone.clinic.service.ReceptionService;

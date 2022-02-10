@@ -1,9 +1,6 @@
 package by.overone.clinic.controller;
 
-import by.overone.clinic.dao.DetailsDAO;
 import by.overone.clinic.dto.*;
-import by.overone.clinic.model.ClientDetails;
-import by.overone.clinic.model.DoctorDetails;
 import by.overone.clinic.service.DetailsService;
 import lombok.AllArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
