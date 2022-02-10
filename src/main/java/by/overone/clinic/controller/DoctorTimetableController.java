@@ -1,7 +1,6 @@
 package by.overone.clinic.controller;
 
 import by.overone.clinic.dto.DocTimetableDTO;
-import by.overone.clinic.model.DoctorTimetable;
 import by.overone.clinic.service.DoctorTimetableService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
