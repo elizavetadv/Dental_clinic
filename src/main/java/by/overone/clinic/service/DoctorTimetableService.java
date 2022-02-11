@@ -13,5 +13,7 @@ public interface DoctorTimetableService {
 
     List<DocTimetableDTO> getRecordsByYear(long id, int year);
 
+    List<DocTimetableDTO> getRecordByDate(int id, int day, int month, int year);
+
     List<DocTimetableDTO> getAllByDoctorId(long id);
 }

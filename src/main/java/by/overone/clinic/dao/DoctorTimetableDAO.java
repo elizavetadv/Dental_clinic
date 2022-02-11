@@ -17,4 +17,6 @@ public interface DoctorTimetableDAO {
     List<DocTimetableDTO> getRecordsByYear(long id, int year);
 
     List<DocTimetableDTO> getAllByDoctorId(long id);
+
+    List<DocTimetableDTO> getRecordByDate(int id, int day, int month, int year);
 }

@@ -43,6 +43,12 @@ public class DoctorTimetableServiceImpl implements DoctorTimetableService {
     }
 
     @Override
+    public List<DocTimetableDTO> getRecordByDate(int id, int day, int month, int year) {
+        detailsService.getDoctorDetails(id);
+        return doctorTimetableDAO.getRecordByDate(id, day, month, year);
+    }
+
+    @Override
     public List<DocTimetableDTO> getAllByDoctorId(long id) {
         detailsService.getDoctorDetails(id);
         return doctorTimetableDAO.getAllByDoctorId(id);

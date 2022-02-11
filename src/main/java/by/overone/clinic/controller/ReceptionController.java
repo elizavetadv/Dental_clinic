@@ -16,7 +16,7 @@ public class ReceptionController {
     private final ReceptionService receptionService;
 
     @ResponseStatus(HttpStatus.ACCEPTED)
-    @PostMapping("/confirm/{id}")
+    @PostMapping("/{id}")
     public void confirmRecord(@PathVariable long id) {
         receptionService.confirmRecord(id);
     }

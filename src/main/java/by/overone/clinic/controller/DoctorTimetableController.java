@@ -21,6 +21,12 @@ public class DoctorTimetableController {
     }
 
     @ResponseStatus(HttpStatus.FOUND)
+    @GetMapping("/{id}/all")
+    public List<DocTimetableDTO> getAllByDoctorId(@PathVariable long id) {
+        return doctorTimetableService.getAllByDoctorId(id);
+    }
+
+    @ResponseStatus(HttpStatus.FOUND)
     @GetMapping("/{id}/{day}")
     public List<DocTimetableDTO> getRecordByDay(@PathVariable long id, @PathVariable int day) {
         return doctorTimetableService.getRecordsByDay(id, day);
@@ -39,8 +45,12 @@ public class DoctorTimetableController {
     }
 
     @ResponseStatus(HttpStatus.FOUND)
-    @GetMapping("/{id}/all")
-    public List<DocTimetableDTO> getAllByDoctorId(@PathVariable long id) {
-        return doctorTimetableService.getAllByDoctorId(id);
+    @GetMapping("/date")
+    public List<DocTimetableDTO> getRecordByDate(@RequestParam(name="id") int id,
+                                                 @RequestParam(name="day", required = false) int day,
+                                                 @RequestParam(name="month", required = false) int month,
+                                                 @RequestParam(name="year", required = false) int year) {
+
+        return doctorTimetableService.getRecordByDate(id, day, month, year);
     }
 }

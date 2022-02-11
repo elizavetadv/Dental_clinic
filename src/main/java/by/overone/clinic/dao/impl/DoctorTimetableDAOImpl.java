@@ -15,6 +15,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -56,6 +57,42 @@ public class DoctorTimetableDAOImpl implements DoctorTimetableDAO {
             throw new DAONotExistException(ExceptionCode.NOT_EXISTING_RECORD.getErrorCode());
         }
         return records.get(0);
+    }
+
+    @Override
+    public List<DocTimetableDTO> getRecordByDate(int id, int day, int month, int year) {
+        StringBuffer sql = new StringBuffer("SELECT * FROM " + DoctorTimetableConstant.TABLE_TIMETABLE + " WHERE ");
+        Object[] date = new Integer[4];
+
+        if (day > 0 || day < 32) {
+            sql.append("EXTRACT(DAY FROM date) =?");
+            date[0] = day;
+        }
+        if (month > 0 || month < 13) {
+            sql.append(" AND EXTRACT(MONTH FROM date) =?");
+            if (date[0] == null) {
+                date[0] = month;
+            } else {
+                date[1] = month;
+            }
+        }
+        if (year >= 2022) {
+            if(date[0] == null){
+                date[0] = year;
+            } else if(date[1] == null){
+                date[1] = year;
+            } else{
+                date[2] = year;
+            }
+            sql.append(" AND EXTRACT(YEAR FROM date) =?");
+        }
+
+        sql.append(" AND " + DoctorTimetableConstant.DOCTOR_ID + "=?");
+        date[3] = id;
+
+        log.info(date[0] + " " + date[1] + " " + date[2] + " " + date[3]);
+
+        return jdbcTemplate.query(sql.toString(), date, new BeanPropertyRowMapper<>(DocTimetableDTO.class));
     }
 
     @Override
