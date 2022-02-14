@@ -21,15 +21,8 @@ public class ReceptionController {
         receptionService.confirmRecord(id);
     }
 
-    @ResponseStatus(HttpStatus.FOUND)
     @GetMapping("/")
     public List<Time> getDoctorFreeTime(@RequestBody SearchDTO searchDTO) {
         return receptionService.getDoctorFreeTime(searchDTO.getDoctorType(), searchDTO.getDate());
-    }
-
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    @PatchMapping("/")
-    public void updateRecordDone() {
-        receptionService.updateRecordDone();
     }
 }

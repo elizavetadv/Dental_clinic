@@ -15,7 +15,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -33,15 +33,6 @@ public class DoctorTimetableDAOImpl implements DoctorTimetableDAO {
 
     private final static String GET_RECORD_BY_ID_QUERY = "SELECT * FROM " + DoctorTimetableConstant.TABLE_TIMETABLE + " WHERE " +
             DoctorTimetableConstant.ID + "=? AND " + UserConstant.STATUS + "<>'CANCELLED'";
-
-    private final static String GET_RECORD_BY_DAY_QUERY = "SELECT * FROM " + DoctorTimetableConstant.TABLE_TIMETABLE +
-            " WHERE EXTRACT(DAY FROM date) =? AND " + DoctorTimetableConstant.DOCTOR_ID + "=?";
-
-    private final static String GET_RECORD_BY_MONTH_QUERY = "SELECT * FROM " + DoctorTimetableConstant.TABLE_TIMETABLE +
-            " WHERE EXTRACT(MONTH FROM date) =? AND " + DoctorTimetableConstant.DOCTOR_ID + "=?";
-
-    private final static String GET_RECORD_BY_YEAR_QUERY = "SELECT * FROM " + DoctorTimetableConstant.TABLE_TIMETABLE +
-            " WHERE EXTRACT(YEAR FROM date) =? AND " + DoctorTimetableConstant.DOCTOR_ID + "=?";
 
     @Override
     public void addToDoctorTimetable(DoctorTimetableDTO doctorTimetableDTO) {
@@ -62,64 +53,35 @@ public class DoctorTimetableDAOImpl implements DoctorTimetableDAO {
     @Override
     public List<DocTimetableDTO> getRecordByDate(int id, int day, int month, int year) {
         StringBuffer sql = new StringBuffer("SELECT * FROM " + DoctorTimetableConstant.TABLE_TIMETABLE + " WHERE ");
-        Object[] date = new Integer[4];
+        List<Integer> num = new ArrayList<>();
 
-        if (day > 0 || day < 32) {
-            sql.append("EXTRACT(DAY FROM date) =?");
-            date[0] = day;
-        }
-        if (month > 0 || month < 13) {
-            sql.append(" AND EXTRACT(MONTH FROM date) =?");
-            if (date[0] == null) {
-                date[0] = month;
-            } else {
-                date[1] = month;
-            }
-        }
-        if (year >= 2022) {
-            if(date[0] == null){
-                date[0] = year;
-            } else if(date[1] == null){
-                date[1] = year;
-            } else{
-                date[2] = year;
-            }
-            sql.append(" AND EXTRACT(YEAR FROM date) =?");
+        if((day < 0 || day > 31) || (month < 0 || month > 12) || (year != 0 && year <= 2021)){
+            throw new DAOIncorrectDataException(ExceptionCode.INCORRECT_QUERY_DATA.getErrorCode());
         }
 
-        sql.append(" AND " + DoctorTimetableConstant.DOCTOR_ID + "=?");
-        date[3] = id;
+        if (day != 0) {
+            sql.append("EXTRACT(DAY FROM date) =? AND ");
+            num.add(day);
+        }
+        if (month != 0) {
+            sql.append("EXTRACT(MONTH FROM date) =? AND ");
+            num.add(month);
+        }
+        if (year != 0) {
+            num.add(year);
+            sql.append("EXTRACT(YEAR FROM date) =? AND ");
+        }
 
-        log.info(date[0] + " " + date[1] + " " + date[2] + " " + date[3]);
+        sql.append(DoctorTimetableConstant.DOCTOR_ID + "=?");
+
+        Object[] date = new Object[num.size() + 1];
+        for(int i = 0; i < num.size(); i++){
+            date[i] = num.get(i);
+        }
+
+        date[num.size()] = id;
 
         return jdbcTemplate.query(sql.toString(), date, new BeanPropertyRowMapper<>(DocTimetableDTO.class));
-    }
-
-    @Override
-    public List<DocTimetableDTO> getRecordsByDay(long id, int day) {
-        if (day <= 0 || day >= 32) {
-            throw new DAOIncorrectDataException(ExceptionCode.INCORRECT_DAY.getErrorCode());
-        } else {
-            return jdbcTemplate.query(GET_RECORD_BY_DAY_QUERY, new Object[]{day, id}, new BeanPropertyRowMapper<>(DocTimetableDTO.class));
-        }
-    }
-
-    @Override
-    public List<DocTimetableDTO> getRecordsByMonth(long id, int month) {
-        if (month <= 0 || month >= 13) {
-            throw new DAOIncorrectDataException(ExceptionCode.INCORRECT_MONTH.getErrorCode());
-        } else {
-            return jdbcTemplate.query(GET_RECORD_BY_MONTH_QUERY, new Object[]{month, id}, new BeanPropertyRowMapper<>(DocTimetableDTO.class));
-        }
-    }
-
-    @Override
-    public List<DocTimetableDTO> getRecordsByYear(long id, int year) {
-        if (year >= 2022) {
-            return jdbcTemplate.query(GET_RECORD_BY_YEAR_QUERY, new Object[]{year, id}, new BeanPropertyRowMapper<>(DocTimetableDTO.class));
-        } else {
-            throw new DAOIncorrectDataException(ExceptionCode.INCORRECT_YEAR.getErrorCode());
-        }
     }
 
     @Override

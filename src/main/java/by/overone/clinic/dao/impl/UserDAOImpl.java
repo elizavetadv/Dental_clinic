@@ -9,14 +9,17 @@ import by.overone.clinic.model.User;
 import by.overone.clinic.util.constant.DetailsConstant;
 import by.overone.clinic.util.constant.UserConstant;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class UserDAOImpl implements UserDAO {
@@ -38,17 +41,6 @@ public class UserDAOImpl implements UserDAO {
             UserConstant.USER_ID + "=? AND " + UserConstant.STATUS + "='ACTIVE'";
 
     private final static String GET_ALL_USERS_QUERY = "SELECT * FROM " + UserConstant.TABLE_USER;
-
-    private final static String GET_ALL_USERS_BY_STATUS_QUERY = "SELECT * FROM " + UserConstant.TABLE_USER +
-            " WHERE " + UserConstant.STATUS + "=?";
-
-    private final static String GET_ALL_USERS_BY_ROLE_QUERY = "SELECT * FROM " + UserConstant.TABLE_USER +
-            " WHERE " + UserConstant.ROLE + "=? AND " + UserConstant.STATUS + "='ACTIVE'";
-
-    private final static String GET_USERS_BY_SURNAME_QUERY = "SELECT * FROM " + UserConstant.TABLE_USER +
-            " LEFT JOIN " + DetailsConstant.TABLE_CLIENT + " ON " + DetailsConstant.CLIENT_ID + "=" + UserConstant.USER_ID +
-            " LEFT JOIN " + DetailsConstant.TABLE_DOCTOR + " ON " + DetailsConstant.DOCTOR_ID + "=" + UserConstant.USER_ID +
-            " WHERE status='ACTIVE' AND " + "doctor_details.surname=? OR client_details.surname=?";
 
     /**
      * This method is used to add users
@@ -75,7 +67,7 @@ public class UserDAOImpl implements UserDAO {
     /**
      * This method is used to update user data
      *
-     * @param id user id
+     * @param id             user id
      * @param userUpdatedDTO data that user can update
      * @see UserUpdatedDTO
      */
@@ -107,35 +99,50 @@ public class UserDAOImpl implements UserDAO {
     }
 
     /**
-     * This method is used to get all users by status
+     *This method returns all users depending on the parameters that are passed to search for users
      *
-     * @param status user status
-     * @return all users with such status
+     * @param status status
+     * @param role role
+     * @param surname surname
+     * @return all users matching the passed parameters
      */
     @Override
-    public List<User> getAllUsersByStatus(String status) {
-        return jdbcTemplate.query(GET_ALL_USERS_BY_STATUS_QUERY, new Object[]{status}, new BeanPropertyRowMapper<>(User.class));
-    }
+    public List<User> get(String status, String role, String surname) {
+        StringBuffer sql = new StringBuffer("SELECT * FROM " + UserConstant.TABLE_USER);
+        List<String> strings = new ArrayList<>();
 
-    /**
-     * This method is used to get all users by role
-     *
-     * @param role user role
-     * @return all users with such role
-     */
-    @Override
-    public List<User> getAllUsersByRole(String role) {
-        return jdbcTemplate.query(GET_ALL_USERS_BY_ROLE_QUERY, new Object[]{role}, new BeanPropertyRowMapper<>(User.class));
-    }
+        if (!surname.equals("")) {
+            if (status.equals("") && role.equals("")) {
+                sql.append(" JOIN " + DetailsConstant.TABLE_CLIENT + " ON " + UserConstant.USER_ID + "=" +
+                        DetailsConstant.CLIENT_ID + " WHERE surname=? ");
+            } else {
+                sql.append(" JOIN " + DetailsConstant.TABLE_CLIENT + " ON " + UserConstant.USER_ID + "=" +
+                        DetailsConstant.CLIENT_ID + " WHERE surname=? AND");
+            }
+            strings.add(surname);
+        } else {
+            sql.append(" WHERE");
+        }
+        if (!status.equals("")) {
+            sql.append(" status=? ");
+            if (!role.equals("")) {
+                sql.append("AND ");
+            }
+            strings.add(status);
+        }
+        if (!role.equals("")) {
+            sql.append(" role=? ");
+            strings.add(role);
+        }
 
-    /**
-     * This method is used to get user(s) by surname
-     *
-     * @param surname user surname
-     * @return user(s)
-     */
-    @Override
-    public List<User> getUserBySurname(String surname) {
-        return jdbcTemplate.query(GET_USERS_BY_SURNAME_QUERY, new Object[]{surname, surname}, new BeanPropertyRowMapper<>(User.class));
+        Object[] data = new String[strings.size()];
+
+        for (int i = 0; i < strings.size(); i++) {
+            data[i] = strings.get(i);
+        }
+
+        log.info(sql.toString());
+
+        return jdbcTemplate.query(sql.toString(), data, new BeanPropertyRowMapper<>(User.class));
     }
 }

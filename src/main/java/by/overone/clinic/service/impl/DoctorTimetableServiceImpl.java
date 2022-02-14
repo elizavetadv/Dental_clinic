@@ -1,6 +1,5 @@
 package by.overone.clinic.service.impl;
 
-import by.overone.clinic.dao.DetailsDAO;
 import by.overone.clinic.dao.DoctorTimetableDAO;
 import by.overone.clinic.dto.DocTimetableDTO;
 import by.overone.clinic.service.DetailsService;

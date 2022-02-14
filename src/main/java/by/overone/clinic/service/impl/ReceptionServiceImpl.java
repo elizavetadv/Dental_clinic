@@ -5,16 +5,16 @@ import by.overone.clinic.dao.ReceptionDAO;
 import by.overone.clinic.dao.exception.DAOIncorrectDataException;
 import by.overone.clinic.model.DoctorType;
 import by.overone.clinic.model.Reception;
-import by.overone.clinic.model.Role;
 import by.overone.clinic.service.ReceptionService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Time;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 
+@Slf4j
 @Service
 public class ReceptionServiceImpl implements ReceptionService {
     @Autowired
@@ -32,12 +32,8 @@ public class ReceptionServiceImpl implements ReceptionService {
     }
 
     @Override
-    public void updateRecordDone() {
-        receptionDAO.updateRecordDone();
-    }
-
-    @Override
     public List<Time> getDoctorFreeTime(String doctorType, LocalDate date) {
+        log.info(doctorType + " " + date);
         if(!doctorType.equals(DoctorType.SURGEON.toString().toLowerCase())
                 && !doctorType.equals(DoctorType.ORTHOPEDIST.toString().toLowerCase())
                 && !doctorType.equals(DoctorType.ORTHODONTIST.toString().toLowerCase())){

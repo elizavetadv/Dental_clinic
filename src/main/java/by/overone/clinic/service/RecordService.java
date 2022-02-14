@@ -20,5 +20,5 @@ public interface RecordService {
 
     List<RecordDTO> getRecordByDoctorId(long id);
 
-    List<Record> getRecordByStatus(String status);
+    List<RecordDTO> getRecordByStatus(String status);
 }

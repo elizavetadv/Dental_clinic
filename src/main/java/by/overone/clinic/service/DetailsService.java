@@ -1,8 +1,6 @@
 package by.overone.clinic.service;
 
 import by.overone.clinic.dto.*;
-import by.overone.clinic.model.ClientDetails;
-import by.overone.clinic.model.DoctorDetails;
 
 import java.util.List;
 

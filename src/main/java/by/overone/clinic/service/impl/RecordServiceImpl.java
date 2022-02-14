@@ -2,9 +2,7 @@ package by.overone.clinic.service.impl;
 
 import by.overone.clinic.controller.exception.ExceptionCode;
 import by.overone.clinic.dao.RecordDAO;
-import by.overone.clinic.dao.UserDAO;
 import by.overone.clinic.dao.exception.DAOIncorrectDataException;
-import by.overone.clinic.dao.exception.DAONotExistException;
 import by.overone.clinic.dto.RecordDTO;
 import by.overone.clinic.model.Record;
 import by.overone.clinic.model.RecordStatus;
@@ -15,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RecordServiceImpl implements RecordService {
@@ -66,11 +65,14 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
-    public List<Record> getRecordByStatus(String status) {
+    public List<RecordDTO> getRecordByStatus(String status) {
         if(!status.equals(RecordStatus.WAITING.toString()) && !status.equals(RecordStatus.CONFIRMED.toString())
                 && !status.equals(RecordStatus.CANCELLED.toString()) && !status.equals(RecordStatus.DONE.toString())){
             throw new DAOIncorrectDataException(ExceptionCode.INCORRECT_QUERY_DATA.getErrorCode());
         }
-        return recordDAO.getRecordByStatus(status);
+        return recordDAO.getRecordByStatus(status)
+                .stream()
+                .map(record -> new RecordDTO(record.getDoctorType(), record.getDate(), record.getTime()))
+                .collect(Collectors.toList());
     }
 }

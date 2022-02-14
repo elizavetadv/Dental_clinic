@@ -59,43 +59,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDataDTO> getAllUsersByStatus(String status) {
-        if(!status.equals(Status.ACTIVE.toString()) && !status.equals(Status.DELETED.toString())){
+    public List<UserDataDTO> get(String status, String role, String surname) {
+        if(( !status.equals("") && !status.equals(Status.ACTIVE.toString()) && !status.equals(Status.DELETED.toString())) ||
+                (!role.equals("") && !role.equals(Role.CLIENT.toString()) && !role.equals(Role.USER.toString()) && !role.equals(Role.DOCTOR.toString()))){
             throw new DAOIncorrectDataException(ExceptionCode.INCORRECT_QUERY_DATA.getErrorCode());
         }
-
-        List<UserDataDTO> userDataDTOs;
-
-        List<User> users = userDAO.getAllUsersByStatus(status);
-        userDataDTOs = users.stream()
+        return userDAO.get(status, role, surname).stream()
                 .map(user -> new UserDataDTO(user.getLogin(), user.getEmail()))
                 .collect(Collectors.toList());
-
-        return userDataDTOs;
-    }
-
-    @Override
-    public List<UserDataDTO> getAllUsersByRole(String role) {
-        if(!role.equals(Role.CLIENT.toString()) && !role.equals(Role.USER.toString()) && !role.equals(Role.DOCTOR.toString())){
-            throw new DAOIncorrectDataException(ExceptionCode.INCORRECT_QUERY_DATA.getErrorCode());
-        }
-
-        List<User> users = userDAO.getAllUsersByRole(role);
-
-        return users.stream()
-                .map(user -> new UserDataDTO(user.getLogin(), user.getEmail()))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<UserDataDTO> getUserBySurname(String surname) {
-        List<User> users = userDAO.getUserBySurname(surname);
-        if(users.isEmpty()){
-            throw new DAONotExistException(ExceptionCode.NOT_EXISTING_USER.getErrorCode());
-        } else {
-            return users.stream()
-                    .map(user -> new UserDataDTO(user.getLogin(), user.getEmail()))
-                    .collect(Collectors.toList());
-        }
     }
 }

@@ -16,7 +16,8 @@ public enum ExceptionCode {
     INCORRECT_YEAR("16"),
     NOT_EXISTING_RECEPTION("17"),
     NOT_EXISTING_TIME("18"),
-    INCORRECT_QUERY_DATA("19");
+    INCORRECT_QUERY_DATA("19"),
+    IMPOSSIBLE_ACTION("21");
 
     private final String errorCode;
 

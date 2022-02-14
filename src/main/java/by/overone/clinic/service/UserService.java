@@ -17,10 +17,5 @@ public interface UserService {
 
     List<UserDataDTO> getAllUsers();
 
-    List<UserDataDTO> getAllUsersByStatus(String status);
-
-    List<UserDataDTO> getAllUsersByRole(String role);
-
-    List<UserDataDTO> getUserBySurname(String surname);
-
+    List<UserDataDTO> get(String status, String role, String surname);
 }
