@@ -14,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +25,7 @@ import java.time.*;
 import java.util.*;
 
 @Slf4j
+@EnableScheduling
 @Repository
 @RequiredArgsConstructor
 public class ReceptionDAOImpl implements ReceptionDAO {
@@ -30,12 +33,6 @@ public class ReceptionDAOImpl implements ReceptionDAO {
     public final JdbcTemplate jdbcTemplate;
 
     public final DetailsDAO detailsDAO;
-
-    public static final String CHECK_DATE_QUERY = "SELECT * FROM " + DoctorTimetableConstant.TABLE_TIMETABLE +
-            " WHERE " + DoctorTimetableConstant.DOCTOR_ID + "=? AND " + RecordConstant.DATE + "=?";
-
-    public static final String CHECK_TIME_QUERY = "SELECT * FROM " + DoctorTimetableConstant.TABLE_TIMETABLE +
-            " WHERE " + DoctorTimetableConstant.DOCTOR_ID + "=? AND " + RecordConstant.TIME + "=?";
 
     public static final String UPDATE_RECORD_QUERY = "UPDATE " + RecordConstant.TABLE_RECORD + " SET " +
             RecordConstant.DOCTOR_ID + "=?, " + UserConstant.STATUS + "=? WHERE " + RecordConstant.RECORD_ID + "=?";
@@ -64,6 +61,10 @@ public class ReceptionDAOImpl implements ReceptionDAO {
 
     private final static String UPDATE_RECORD_DONE_QUERY = "UPDATE " + RecordConstant.TABLE_RECORD + " SET " + UserConstant.STATUS +
             "='DONE' WHERE " + UserConstant.STATUS + "='CONFIRMED' AND DATE(" + RecordConstant.DATE + ")<? AND TIME(" +
+            RecordConstant.TIME + ")<?";
+
+    private final static String GET = "SELECT * FROM " + RecordConstant.TABLE_RECORD +
+            " WHERE " + UserConstant.STATUS + "='CONFIRMED' AND DATE(" + RecordConstant.DATE + ")<? AND TIME(" +
             RecordConstant.TIME + ")<?";
 
     private final static String UPDATE_STATUS_DOCTOR_TIMETABLE_QUERY = "UPDATE " + DoctorTimetableConstant.TABLE_TIMETABLE +
@@ -95,7 +96,6 @@ public class ReceptionDAOImpl implements ReceptionDAO {
                 new Object[]{findDoctorId(doctorType), date}, new BeanPropertyRowMapper<>(DocTimetableDTO.class));
         List<Record> busyInRecords = jdbcTemplate.query(GET_BUSY_TIME_RECORDS_QUERY, new Object[]{doctorType, date},
                 new BeanPropertyRowMapper<>(Record.class));
-
         List<DocTimetableDTO> all = jdbcTemplate.query(GET_ALL_DOCTOR_TIME_QUERY, new BeanPropertyRowMapper<>(DocTimetableDTO.class));
         List<Time> free = new ArrayList<>();
         List<Time> free1 = free;
@@ -105,13 +105,13 @@ public class ReceptionDAOImpl implements ReceptionDAO {
         }
 
         for (DocTimetableDTO t : all) {
-            for(DocTimetableDTO d: busyInDT){
-                if(d.getTime().equals(t.getTime())){
+            for (DocTimetableDTO d : busyInDT) {
+                if (d.getTime().equals(t.getTime())) {
                     free1.remove(d.getTime());
                 }
             }
-            for(Record r : busyInRecords){
-                if(r.getTime().equals(t.getTime())){
+            for (Record r : busyInRecords) {
+                if (r.getTime().equals(t.getTime())) {
                     free1.remove(r.getTime());
                 }
             }
@@ -128,14 +128,6 @@ public class ReceptionDAOImpl implements ReceptionDAO {
     public long findDoctorId(String type) {
         List<DoctorDetails> doctors = detailsDAO.getDoctorDetailsByType(type);
         return doctors.get(0).getDoctor_user_id();
-    }
-
-    @Override
-    public boolean checkDateAndTime(long doctorId, LocalDate date, Time time) {
-        return jdbcTemplate.query(CHECK_DATE_QUERY, new Object[]{doctorId, date},
-                new BeanPropertyRowMapper<>(DoctorTimetable.class)).isEmpty() &&
-                jdbcTemplate.query(CHECK_TIME_QUERY, new Object[]{doctorId, time},
-                        new BeanPropertyRowMapper<>(DoctorTimetable.class)).isEmpty();
     }
 
     @Transactional
@@ -155,38 +147,38 @@ public class ReceptionDAOImpl implements ReceptionDAO {
         reception.setDoctorId(idDoctor);
         reception.setClientId(idClient);
 
-        log.info("before checking date and time: " + checkDateAndTime(idDoctor, record.getDate(), record.getTime()));
+        ClientDetails clientDetails = detailsDAO.getClientDetails(idClient);
 
-        if (checkDateAndTime(idDoctor, record.getDate(), record.getTime())) {
-            ClientDetails clientDetails = detailsDAO.getClientDetails(idClient);
+        DoctorTimetableDTO doctorTimetableDTO = new DoctorTimetableDTO();
+        doctorTimetableDTO.setClientSurname(clientDetails.getSurname());
+        doctorTimetableDTO.setDate(record.getDate());
+        doctorTimetableDTO.setTime(record.getTime());
+        doctorTimetableDTO.setDoctorId(idDoctor);
 
-            DoctorTimetableDTO doctorTimetableDTO = new DoctorTimetableDTO();
-            doctorTimetableDTO.setClientSurname(clientDetails.getSurname());
-            doctorTimetableDTO.setDate(record.getDate());
-            doctorTimetableDTO.setTime(record.getTime());
-            doctorTimetableDTO.setDoctorId(idDoctor);
+        DoctorTimetableDAO doctorTimetableDAO = new DoctorTimetableDAOImpl(jdbcTemplate);
 
-            DoctorTimetableDAO doctorTimetableDAO = new DoctorTimetableDAOImpl(jdbcTemplate);
+        doctorTimetableDAO.addToDoctorTimetable(doctorTimetableDTO);
 
-            doctorTimetableDAO.addToDoctorTimetable(doctorTimetableDTO);
+        jdbcTemplate.update(UPDATE_RECORD_QUERY, idDoctor, RecordStatus.CONFIRMED.toString(), reception.getRecord_id_record());
 
-            jdbcTemplate.update(UPDATE_RECORD_QUERY, idDoctor, RecordStatus.CONFIRMED.toString(), reception.getRecord_id_record());
+        DoctorDetails doctorDetails = detailsDAO.getDoctorDetails(idDoctor);
 
-            DoctorDetails doctorDetails = detailsDAO.getDoctorDetails(idDoctor);
+        jdbcTemplate.update(ADD_CLIENT_RECORD_QUERY, doctorDetails.getSurname(), doctorDetails.getDoctorType(),
+                record.getDate(), record.getTime(), idClient);
 
-            jdbcTemplate.update(ADD_CLIENT_RECORD_QUERY, doctorDetails.getSurname(), doctorDetails.getDoctorType(),
-                    record.getDate(), record.getTime(), idClient);
-
-            jdbcTemplate.update(UPDATE_RECEPTION_QUERY, idDoctor, reception.getIdReception());
-        }
+        jdbcTemplate.update(UPDATE_RECEPTION_QUERY, idDoctor, reception.getIdReception());
     }
 
+    @Scheduled(fixedRate=15*60*1000)
     @Transactional
     @Override
     public void updateRecordDone() {
         String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
         String date = timeStamp.substring(0, 11);
         String time = timeStamp.substring(11);
+
+        List<Record> rr = jdbcTemplate.query(GET, new Object[]{date, time}, new BeanPropertyRowMapper<>(Record.class));
+        log.info(rr.toString());
 
         jdbcTemplate.update(UPDATE_RECORD_DONE_QUERY, date, time);
 

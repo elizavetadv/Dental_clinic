@@ -35,13 +35,21 @@ public class DetailsServiceImpl implements DetailsService {
     @Override
     public void addClientDetails(long id, ClientDetailsDTO clientDetailsDTO){
         userService.getUserById(id);
-        detailsDAO.addClientDetails(id, clientDetailsDTO);
+        if(userDAO.getUserById(id).get().getRole().equals(Role.USER.toString())) {
+            detailsDAO.addClientDetails(id, clientDetailsDTO);
+        } else{
+            throw new DAONotExistException(ExceptionCode.IMPOSSIBLE_ACTION.getErrorCode());
+        }
     }
 
     @Override
     public void addDoctorDetails(long id, DoctorDetailsDTO doctorDetailsDTO){
         userService.getUserById(id);
-        detailsDAO.addDoctorDetails(id, doctorDetailsDTO);
+        if(userDAO.getUserById(id).get().getRole().equals(Role.USER.toString())){
+            detailsDAO.addDoctorDetails(id, doctorDetailsDTO);
+        } else{
+            throw new DAONotExistException(ExceptionCode.IMPOSSIBLE_ACTION.getErrorCode());
+        }
     }
 
     @Override

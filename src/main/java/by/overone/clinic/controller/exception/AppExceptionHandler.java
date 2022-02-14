@@ -38,7 +38,7 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 
         log.error("error", e);
 
-        return new ResponseEntity<>(response, HttpStatus.FOUND);
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(SQLException.class)
@@ -79,7 +79,7 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
         }
         log.error("error", e);
 
-        return new ResponseEntity<>(response, HttpStatus.FOUND);
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
     @Override

@@ -1,7 +1,5 @@
 package by.overone.clinic.controller;
 
-import by.overone.clinic.controller.exception.ExceptionCode;
-import by.overone.clinic.dao.exception.DAOIncorrectDataException;
 import by.overone.clinic.dto.UserDataDTO;
 import by.overone.clinic.dto.UserRegistrationDTO;
 import by.overone.clinic.dto.UserUpdatedDTO;
@@ -37,27 +35,19 @@ public class UserController {
         userService.updateUser(id, userUpdatedDTO);
     }
 
-    @ResponseStatus(HttpStatus.FOUND)
     @GetMapping("/{id}")
     public UserDataDTO getUserById(@PathVariable long id) {
         return userService.getUserById(id);
     }
 
-    @ResponseStatus(HttpStatus.FOUND)
     @GetMapping
-    public List<UserDataDTO> get(@RequestParam(name = "status", required = false) String status,
-                                 @RequestParam(name = "role", required = false) String role,
-                                 @RequestParam(name = "surname", required = false) String surname) {
-        if(!status.isEmpty() && role.isEmpty() && surname.isEmpty()){
-            return userService.getAllUsersByStatus(status);
-        } else if(!role.isEmpty() && status.isEmpty() && surname.isEmpty()){
-            return userService.getAllUsersByRole(role);
-        } else if(!surname.isEmpty() && status.isEmpty() && role.isEmpty()){
-            return userService.getUserBySurname(surname);
-        } else if(status.isEmpty() && role.isEmpty() && surname.isEmpty()){
+    public List<UserDataDTO> get(@RequestParam(name = "status", required = false, defaultValue = "") String status,
+                                 @RequestParam(name = "role", required = false, defaultValue = "") String role,
+                                 @RequestParam(name = "surname", required = false, defaultValue = "") String surname) {
+        if (status.equals("") && role.equals("") && surname.equals("")){
             return userService.getAllUsers();
-        } else{
-            throw new DAOIncorrectDataException(ExceptionCode.INCORRECT_QUERY_DATA.getErrorCode());
+        } else {
+            return userService.get(status, role, surname);
         }
     }
 }

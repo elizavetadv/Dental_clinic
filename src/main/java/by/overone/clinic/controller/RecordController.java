@@ -1,13 +1,17 @@
 package by.overone.clinic.controller;
 
+import by.overone.clinic.controller.exception.ExceptionCode;
+import by.overone.clinic.dao.exception.DAOIncorrectDataException;
 import by.overone.clinic.dto.RecordDTO;
 import by.overone.clinic.model.Record;
 import by.overone.clinic.service.RecordService;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -15,6 +19,7 @@ import java.util.List;
 @RequestMapping("/api/records")
 public class RecordController {
     private final RecordService recordService;
+    private final ModelMapper modelMapper;
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{id}")
@@ -34,33 +39,28 @@ public class RecordController {
         recordService.updateRecord(id, recordDTO);
     }
 
-    @ResponseStatus(HttpStatus.FOUND)
-    @GetMapping
-    public List<RecordDTO> getAllRecords() {
-        return recordService.getAllRecords();
-    }
-
-    @ResponseStatus(HttpStatus.FOUND)
     @GetMapping("/{id}")
-    public Record getRecordById(@PathVariable long id) {
-        return recordService.getRecordById(id);
+    public List<RecordDTO> getRecord(@PathVariable long id,
+                                     @RequestParam(name = "role", required = false, defaultValue = "") String str) {
+        List<RecordDTO> recordDTOS = new ArrayList<>();
+        if (str.isEmpty()) {
+            recordDTOS.add(modelMapper.map(recordService.getRecordById(id), RecordDTO.class));
+            return recordDTOS;
+        } else if (str.equals("client")) {
+            return recordService.getRecordByClientId(id);
+        } else if (str.equals("doctor")) {
+            return recordService.getRecordByDoctorId(id);
+        } else {
+            throw new DAOIncorrectDataException(ExceptionCode.INCORRECT_QUERY_DATA.getErrorCode());
+        }
     }
 
-    @ResponseStatus(HttpStatus.FOUND)
-    @GetMapping("/client/{id}")
-    public List<RecordDTO> getRecordByClientId(@PathVariable long id) {
-        return recordService.getRecordByClientId(id);
-    }
-
-    @ResponseStatus(HttpStatus.FOUND)
-    @GetMapping("/doctor/{id}")
-    public List<RecordDTO> getRecordByDoctorId(@PathVariable long id) {
-        return recordService.getRecordByDoctorId(id);
-    }
-
-    @ResponseStatus(HttpStatus.FOUND)
-    @GetMapping("/status/{status}")
-    public List<Record> getRecordsByStatus(@PathVariable String status) {
-        return recordService.getRecordByStatus(status);
+    @GetMapping
+    public List<RecordDTO> getRecordsByStatus(@RequestParam(name = "status", required = false, defaultValue = "") String status) {
+        if (status.isEmpty()) {
+            return recordService.getAllRecords();
+        } else {
+            return recordService.getRecordByStatus(status);
+        }
     }
 }
