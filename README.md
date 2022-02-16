@@ -8,15 +8,11 @@
 
 # Data model
 
----
-
 ## ER diagram for the data model
 
 ![img.png](src/main/resources/img.png)
 
 ## Tables
-
----
 
  - User: Contains the information about all the users
    - User id
