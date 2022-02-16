@@ -41,13 +41,13 @@ public class UserController {
     }
 
     @GetMapping
-    public List<UserDataDTO> get(@RequestParam(name = "status", required = false, defaultValue = "") String status,
+    public List<UserDataDTO> getUser(@RequestParam(name = "status", required = false, defaultValue = "") String status,
                                  @RequestParam(name = "role", required = false, defaultValue = "") String role,
                                  @RequestParam(name = "surname", required = false, defaultValue = "") String surname) {
         if (status.equals("") && role.equals("") && surname.equals("")){
             return userService.getAllUsers();
         } else {
-            return userService.get(status, role, surname);
+            return userService.getUser(status, role, surname);
         }
     }
 }

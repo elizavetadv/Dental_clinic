@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDataDTO> get(String status, String role, String surname) {
+    public List<UserDataDTO> getUser(String status, String role, String surname) {
         if(( !status.equals("") && !status.equals(Status.ACTIVE.toString()) && !status.equals(Status.DELETED.toString())) ||
                 (!role.equals("") && !role.equals(Role.CLIENT.toString()) && !role.equals(Role.USER.toString()) && !role.equals(Role.DOCTOR.toString()))){
             throw new DAOIncorrectDataException(ExceptionCode.INCORRECT_QUERY_DATA.getErrorCode());
