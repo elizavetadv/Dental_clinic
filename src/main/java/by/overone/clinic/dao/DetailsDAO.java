@@ -6,6 +6,10 @@ import by.overone.clinic.model.DoctorDetails;
 
 import java.util.List;
 
+/**
+ * Interface with methods for client and doctor details
+ * @see by.overone.clinic.dao.impl.DetailsDAOImpl with realization of all methods
+ */
 public interface DetailsDAO {
     void addClientDetails(long id, ClientDetailsDTO clientDetailsDTO);
 

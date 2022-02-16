@@ -50,6 +50,15 @@ public class DoctorTimetableDAOImpl implements DoctorTimetableDAO {
         return records.get(0);
     }
 
+    /**
+     * This method is used to get records in doctor timetable by date and doctor id
+     *
+     * @param id doctor id
+     * @param day day
+     * @param month month
+     * @param year year
+     * @return lost of records in doctor timetable
+     */
     @Override
     public List<DocTimetableDTO> getRecordByDate(int id, int day, int month, int year) {
         StringBuffer sql = new StringBuffer("SELECT * FROM " + DoctorTimetableConstant.TABLE_TIMETABLE + " WHERE ");
@@ -84,6 +93,12 @@ public class DoctorTimetableDAOImpl implements DoctorTimetableDAO {
         return jdbcTemplate.query(sql.toString(), date, new BeanPropertyRowMapper<>(DocTimetableDTO.class));
     }
 
+    /**
+     * This method is used to get all records for one doctor with doctor id
+     *
+     * @param id doctor id
+     * @return list of records from doctor timetable
+     */
     @Override
     public List<DocTimetableDTO> getAllByDoctorId(long id) {
         return jdbcTemplate.query(GET_ALL_RECORDS_BY_DOCTOR_ID_QUERY, new Object[]{id},

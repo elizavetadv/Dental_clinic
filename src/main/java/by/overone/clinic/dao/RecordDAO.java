@@ -5,6 +5,10 @@ import by.overone.clinic.model.Record;
 
 import java.util.List;
 
+/**
+ * Interface with methods for record
+ * @see by.overone.clinic.dao.impl.RecordDAOImpl with realization of all methods
+ */
 public interface RecordDAO {
     void makeRecord(long id, RecordDTO recordDTO);
 

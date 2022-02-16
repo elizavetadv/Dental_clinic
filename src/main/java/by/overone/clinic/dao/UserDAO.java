@@ -7,6 +7,10 @@ import by.overone.clinic.model.User;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Interface with methods for the user
+ * @see by.overone.clinic.dao.impl.UserDAOImpl with realization of all methods
+ */
 public interface UserDAO {
 
     void addUser(UserRegistrationDTO userRegistrationDTO);

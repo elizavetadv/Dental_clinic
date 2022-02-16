@@ -19,6 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Class implementing the UserDao interface
+ * @see UserDAO
+ */
 @Slf4j
 @Repository
 @RequiredArgsConstructor

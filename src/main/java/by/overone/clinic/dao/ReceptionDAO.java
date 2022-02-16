@@ -6,6 +6,10 @@ import java.sql.Time;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Interface with methods for reception
+ * @see by.overone.clinic.dao.impl.ReceptionDAOImpl with realization of all methods
+ */
 public interface ReceptionDAO {
     void addReception(long recordId);
 
@@ -16,6 +20,4 @@ public interface ReceptionDAO {
     long findDoctorId(String type);
 
     void confirmRecord(long receptionId);
-
-    void updateRecordDone();
 }

@@ -1,10 +1,7 @@
 package by.overone.clinic.dao.impl;
 
 import by.overone.clinic.controller.exception.ExceptionCode;
-import by.overone.clinic.dao.DetailsDAO;
-import by.overone.clinic.dao.DoctorTimetableDAO;
-import by.overone.clinic.dao.ReceptionDAO;
-import by.overone.clinic.dao.RecordDAO;
+import by.overone.clinic.dao.*;
 import by.overone.clinic.dao.exception.DAONotExistException;
 import by.overone.clinic.dto.DocTimetableDTO;
 import by.overone.clinic.dto.DoctorTimetableDTO;
@@ -24,6 +21,11 @@ import java.text.SimpleDateFormat;
 import java.time.*;
 import java.util.*;
 
+/**
+ * Class implementing the ReceptionDao interface
+ *
+ * @see ReceptionDAO
+ */
 @Slf4j
 @EnableScheduling
 @Repository
@@ -71,6 +73,11 @@ public class ReceptionDAOImpl implements ReceptionDAO {
             " SET " + UserConstant.STATUS + "=? WHERE " + DoctorTimetableConstant.DOCTOR_ID + "=? AND " + RecordConstant.DATE +
             "=? AND " + RecordConstant.TIME + "=?";
 
+    /**
+     * This method is used to create reception for record with record id
+     *
+     * @param recordId record id
+     */
     @Override
     public void addReception(long recordId) {
         RecordDAO recordDAO = new RecordDAOImpl(jdbcTemplate, new ReceptionDAOImpl(jdbcTemplate, new DetailsDAOImpl(jdbcTemplate)));
@@ -80,6 +87,12 @@ public class ReceptionDAOImpl implements ReceptionDAO {
         jdbcTemplate.update(ADD_RECEPTION_QUERY, recordId, record.getUser_user_id());
     }
 
+    /**
+     * This method is used to get reception by id
+     *
+     * @param id reception id
+     * @return reception
+     */
     @Override
     public Reception getById(long id) {
         List<Reception> receptions = jdbcTemplate.query(GET_RECEPTION_BY_ID_QUERY, new Object[]{id},
@@ -90,6 +103,13 @@ public class ReceptionDAOImpl implements ReceptionDAO {
         return receptions.get(0);
     }
 
+    /**
+     * This method is used to get doctor's free time on certain date
+     *
+     * @param doctorType doctor's type
+     * @param date       date
+     * @return time list
+     */
     @Override
     public List<Time> getDoctorFreeTime(String doctorType, LocalDate date) {
         List<DocTimetableDTO> busyInDT = jdbcTemplate.query(GET_BUSY_TIME_DOCTOR_TIMETABLE_QUERY,
@@ -124,12 +144,23 @@ public class ReceptionDAOImpl implements ReceptionDAO {
         }
     }
 
+    /**
+     * This method is used to find doctor id by doctor type
+     *
+     * @param type doctor's type
+     * @return doctor id
+     */
     @Override
     public long findDoctorId(String type) {
         List<DoctorDetails> doctors = detailsDAO.getDoctorDetailsByType(type);
         return doctors.get(0).getDoctor_user_id();
     }
 
+    /**
+     * This method is used to confirm record according to reception id where record is stored
+     *
+     * @param receptionId reception id
+     */
     @Transactional
     @Override
     public void confirmRecord(long receptionId) {
@@ -169,9 +200,11 @@ public class ReceptionDAOImpl implements ReceptionDAO {
         jdbcTemplate.update(UPDATE_RECEPTION_QUERY, idDoctor, reception.getIdReception());
     }
 
-    @Scheduled(fixedRate=15*60*1000)
+    /**
+     * This method is used to update record status from CONFIRMED to DONE every 15 min automatically
+     */
+    @Scheduled(fixedRate = 15 * 60 * 1000)
     @Transactional
-    @Override
     public void updateRecordDone() {
         String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
         String date = timeStamp.substring(0, 11);

@@ -3,6 +3,7 @@ package by.overone.clinic.dao.impl;
 import by.overone.clinic.controller.exception.ExceptionCode;
 import by.overone.clinic.dao.ReceptionDAO;
 import by.overone.clinic.dao.RecordDAO;
+import by.overone.clinic.dao.UserDAO;
 import by.overone.clinic.dao.exception.DAONotExistException;
 import by.overone.clinic.dao.exception.DAORecordException;
 import by.overone.clinic.dto.RecordDTO;
@@ -18,6 +19,10 @@ import org.springframework.stereotype.Repository;
 import java.sql.Time;
 import java.util.List;
 
+/**
+ * Class implementing the RecordDAO interface
+ * @see RecordDAO
+ */
 @Repository
 @RequiredArgsConstructor
 public class RecordDAOImpl implements RecordDAO {
@@ -55,6 +60,12 @@ public class RecordDAOImpl implements RecordDAO {
     private final static String GET_RECORD_BY_STATUS_QUERY = "SELECT * FROM " + RecordConstant.TABLE_RECORD +
             " WHERE " + UserConstant.STATUS + "=?";
 
+    /**
+     * This method is used to make record
+     *
+     * @param id user id
+     * @param recordDTO data that user can enter to make record
+     */
     @Override
     public void makeRecord(long id, RecordDTO recordDTO) {
         List<Time> times = receptionDAO.getDoctorFreeTime(recordDTO.getDoctorType(), recordDTO.getDate());
@@ -69,6 +80,11 @@ public class RecordDAOImpl implements RecordDAO {
         }
     }
 
+    /**
+     * This method is used to delete record by id
+     *
+     * @param id record id
+     */
     @Override
     public void deleteRecord(long id) {
         Record record = getRecordById(id);
@@ -80,6 +96,12 @@ public class RecordDAOImpl implements RecordDAO {
         jdbcTemplate.update(UPDATE_RECORD_STATUS_QUERY, RecordStatus.CANCELLED.toString(), id);
     }
 
+    /**
+     * This method is used to update record
+     *
+     * @param id record id
+     * @param recordDTO record data available for updating
+     */
     @Override
     public void updateRecord(long id, RecordDTO recordDTO) {
         Record record = getRecordById(id);
@@ -91,11 +113,22 @@ public class RecordDAOImpl implements RecordDAO {
         }
     }
 
+    /**
+     * This method is used to get all records
+     *
+     * @return list of RecordDTO
+     */
     @Override
     public List<RecordDTO> getAllRecords() {
         return jdbcTemplate.query(GET_ALL_RECORDS_QUERY, new BeanPropertyRowMapper<>(RecordDTO.class));
     }
 
+    /**
+     * This method is used to get record by id
+     *
+     * @param id record id
+     * @return record
+     */
     @Override
     public Record getRecordById(long id) {
         List<Record> records = jdbcTemplate.query(GET_RECORD_BY_ID_QUERY, new Object[]{id}, new BeanPropertyRowMapper<>(Record.class));
@@ -105,6 +138,12 @@ public class RecordDAOImpl implements RecordDAO {
         return records.get(0);
     }
 
+    /**
+     * This method is used to get client's records by their id
+     *
+     * @param id client id
+     * @return list of RecordDTO
+     */
     @Override
     public List<RecordDTO> getRecordByClientId(long id) {
         List<RecordDTO> records = jdbcTemplate.query(GET_RECORD_BY_CLIENT_ID_QUERY, new Object[]{id}, new BeanPropertyRowMapper<>(RecordDTO.class));
@@ -114,6 +153,12 @@ public class RecordDAOImpl implements RecordDAO {
         return records;
     }
 
+    /**
+     * This method is used to get records by doctor id
+     *
+     * @param id doctor id
+     * @return list of RecordDTO
+     */
     @Override
     public List<RecordDTO> getRecordByDoctorId(long id) {
         List<RecordDTO> records = jdbcTemplate.query(GET_RECORD_BY_DOCTOR_ID_QUERY, new Object[]{id}, new BeanPropertyRowMapper<>(RecordDTO.class));
@@ -123,6 +168,12 @@ public class RecordDAOImpl implements RecordDAO {
         return records;
     }
 
+    /**
+     * This method is used to get records by specified status
+     *
+     * @param status status
+     * @return list of records
+     */
     @Override
     public List<Record> getRecordByStatus(String status) {
         return jdbcTemplate.query(GET_RECORD_BY_STATUS_QUERY, new Object[]{status}, new BeanPropertyRowMapper<>(Record.class));
