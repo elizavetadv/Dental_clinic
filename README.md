@@ -122,3 +122,11 @@ GET | /api/doctor/timetable/date | get record by date in params
 - Java 11
 - Gradle
 - MySQl
+
+### Project requests are grouped as follows in Postman:
+
+![img.png](src/main/resources/tomcat.png)
+
+### Click button to try
+
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/822aaadaf86b2be25ce5?action=collection%2Fimport)
