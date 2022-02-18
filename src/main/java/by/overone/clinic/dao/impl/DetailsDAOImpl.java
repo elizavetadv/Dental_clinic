@@ -1,7 +1,6 @@
 package by.overone.clinic.dao.impl;
 
 import by.overone.clinic.dao.DetailsDAO;
-import by.overone.clinic.dao.UserDAO;
 import by.overone.clinic.dto.*;
 import by.overone.clinic.model.ClientDetails;
 import by.overone.clinic.model.DoctorDetails;
@@ -76,7 +75,7 @@ public class DetailsDAOImpl implements DetailsDAO {
             " WHERE " + ClientRecordConstant.CLIENT_ID + "=?";
 
     /**
-     * This method is used to add client data
+     * This method is used to add client data in database
      *
      * @param id user id
      * @param clientDetailsDTO client's data that user can add
@@ -91,7 +90,7 @@ public class DetailsDAOImpl implements DetailsDAO {
     }
 
     /**
-     *  This method is used to add doctor's data by admin
+     *  This method is used to add doctor's data by admin in db
      *
      * @param id user id
      * @param doctorDetailsDTO doctor's data
@@ -106,10 +105,10 @@ public class DetailsDAOImpl implements DetailsDAO {
     }
 
     /**
-     * This method is used to update client's data
+     * This method is used to update client's data in db
      *
      * @param id client id
-     * @param clientDetailsDTO client details
+     * @param clientDetailsDTO client details that can be changed
      */
     @Override
     public void updateClientDetails(long id, ClientDetailsDTO clientDetailsDTO) {
@@ -118,10 +117,10 @@ public class DetailsDAOImpl implements DetailsDAO {
     }
 
     /**
-     * This method is used to update doctor's data by admin
+     * This method is used to update doctor's data by admin in db
      *
      * @param id doctor id
-     * @param doctorDetailsDTO doctor details
+     * @param doctorDetailsDTO doctor details that can be changed
      */
     @Override
     public void updateDoctorDetails(long id, DoctorDetailsDTO doctorDetailsDTO) {
@@ -130,7 +129,7 @@ public class DetailsDAOImpl implements DetailsDAO {
     }
 
     /**
-     * This method is used to get client details by id
+     * This method is used to get client details by id from database
      *
      * @param id client id
      * @return client details
@@ -141,7 +140,7 @@ public class DetailsDAOImpl implements DetailsDAO {
     }
 
     /**
-     * This method is used to get doctor details by doctor id
+     * This method is used to get doctor details by doctor id from database
      *
      * @param id doctor id
      * @return doctor details
@@ -153,10 +152,10 @@ public class DetailsDAOImpl implements DetailsDAO {
     }
 
     /**
-     * This method is used to get doctor details by doctor type
+     * This method is used to get doctor details by doctor type from database
      *
      * @param type doctor type
-     * @return list of doctor details with one status
+     * @return list of doctor details with same status
      */
     @Override
     public List<DoctorDetails> getDoctorDetailsByType(String type) {
@@ -165,7 +164,7 @@ public class DetailsDAOImpl implements DetailsDAO {
     }
 
     /**
-     * This method is used to get all client details
+     * This method is used to get all client details from database
      *
      * @param id client id
      * @return all client details
@@ -176,7 +175,7 @@ public class DetailsDAOImpl implements DetailsDAO {
     }
 
     /**
-     * This method is used to get all doctor details
+     * This method is used to get all doctor details from database
      *
      * @param id doctor id
      * @return all doctor details
@@ -187,7 +186,7 @@ public class DetailsDAOImpl implements DetailsDAO {
     }
 
     /**
-     * This method is used to get all records for one client with client id
+     * This method is used to get all records for one client with client id from database
      *
      * @param id client id
      * @return list of client records

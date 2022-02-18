@@ -20,4 +20,6 @@ public interface ReceptionDAO {
     long findDoctorId(String type);
 
     void confirmRecord(long receptionId);
+
+    void updateRecordDone();
 }

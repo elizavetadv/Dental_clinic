@@ -23,7 +23,6 @@ import java.util.*;
 
 /**
  * Class implementing the ReceptionDao interface
- *
  * @see ReceptionDAO
  */
 @Slf4j
@@ -88,7 +87,7 @@ public class ReceptionDAOImpl implements ReceptionDAO {
     }
 
     /**
-     * This method is used to get reception by id
+     * This method is used to get reception by id from database
      *
      * @param id reception id
      * @return reception
@@ -107,7 +106,7 @@ public class ReceptionDAOImpl implements ReceptionDAO {
      * This method is used to get doctor's free time on certain date
      *
      * @param doctorType doctor's type
-     * @param date       date
+     * @param date date
      * @return time list
      */
     @Override
@@ -145,7 +144,7 @@ public class ReceptionDAOImpl implements ReceptionDAO {
     }
 
     /**
-     * This method is used to find doctor id by doctor type
+     * This method is used to find doctor id by doctor type from db
      *
      * @param type doctor's type
      * @return doctor id
@@ -205,6 +204,7 @@ public class ReceptionDAOImpl implements ReceptionDAO {
      */
     @Scheduled(fixedRate = 15 * 60 * 1000)
     @Transactional
+    @Override
     public void updateRecordDone() {
         String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
         String date = timeStamp.substring(0, 11);

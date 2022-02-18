@@ -18,6 +18,10 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class implementing the DoctorTimetableDAO interface
+ * @see DoctorTimetableDAO
+ */
 @Slf4j
 @Repository
 @RequiredArgsConstructor
@@ -40,6 +44,12 @@ public class DoctorTimetableDAOImpl implements DoctorTimetableDAO {
                 doctorTimetableDTO.getTime(), doctorTimetableDTO.getDoctorId(), RecordStatus.CONFIRMED.toString());
     }
 
+    /**
+     * This method is used to get record by id from table doctor_timetable in db
+     *
+     * @param id record id
+     * @return record from table with doctor timetable without doctor's id
+     */
     @Override
     public DocTimetableDTO getRecordById(long id) {
         List<DocTimetableDTO> records = jdbcTemplate.query(GET_RECORD_BY_ID_QUERY, new Object[]{id},
@@ -51,13 +61,13 @@ public class DoctorTimetableDAOImpl implements DoctorTimetableDAO {
     }
 
     /**
-     * This method is used to get records in doctor timetable by date and doctor id
+     * This method is used to get records in doctor timetable by date and doctor id from db
      *
      * @param id doctor id
      * @param day day
      * @param month month
      * @param year year
-     * @return lost of records in doctor timetable
+     * @return list of records in doctor timetable
      */
     @Override
     public List<DocTimetableDTO> getRecordByDate(int id, int day, int month, int year) {
@@ -94,7 +104,7 @@ public class DoctorTimetableDAOImpl implements DoctorTimetableDAO {
     }
 
     /**
-     * This method is used to get all records for one doctor with doctor id
+     * This method is used to get all records for one doctor with doctor id from database
      *
      * @param id doctor id
      * @return list of records from doctor timetable

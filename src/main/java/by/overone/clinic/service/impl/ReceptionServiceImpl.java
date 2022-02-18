@@ -20,17 +20,35 @@ public class ReceptionServiceImpl implements ReceptionService {
     @Autowired
     ReceptionDAO receptionDAO;
 
+    /**
+     * Return reception by id from database
+     *
+     * @param id reception id
+     * @return reception
+     */
     @Override
     public Reception getById(long id) {
         return receptionDAO.getById(id);
     }
 
+    /**
+     * This method confirms client record by reception id
+     *
+     * @param receptionId reception id
+     */
     @Override
     public void confirmRecord(long receptionId) {
         getById(receptionId);
         receptionDAO.confirmRecord(receptionId);
     }
 
+    /**
+     * Return all free time for doctor with doctor type
+     *
+     * @param doctorType doctor type
+     * @param date date
+     * @return list of free time
+     */
     @Override
     public List<Time> getDoctorFreeTime(String doctorType, LocalDate date) {
         log.info(doctorType + " " + date);

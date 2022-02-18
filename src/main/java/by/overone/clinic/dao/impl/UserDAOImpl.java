@@ -47,7 +47,7 @@ public class UserDAOImpl implements UserDAO {
     private final static String GET_ALL_USERS_QUERY = "SELECT * FROM " + UserConstant.TABLE_USER;
 
     /**
-     * This method is used to add users
+     * This method is used to add users to the database
      *
      * @param userRegistrationDTO data for registration
      * @see UserRegistrationDTO
@@ -59,7 +59,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     /**
-     * This method is used to delete user by his id
+     * This method is used to delete user by his id (change user's status to DELETED)
      *
      * @param id user id
      */
@@ -69,9 +69,9 @@ public class UserDAOImpl implements UserDAO {
     }
 
     /**
-     * This method is used to update user data
+     * This method is used to update user data in database
      *
-     * @param id             user id
+     * @param id user id
      * @param userUpdatedDTO data that user can update
      * @see UserUpdatedDTO
      */
@@ -82,7 +82,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     /**
-     * This method is used to get user by id
+     * This method is used to get user by id from database
      *
      * @param id user id
      * @return user with needed id
@@ -103,7 +103,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     /**
-     *This method returns all users depending on the parameters that are passed to search for users
+     * This method returns all users depending on the parameters that are passed to search for users
      *
      * @param status status
      * @param role role
@@ -111,7 +111,7 @@ public class UserDAOImpl implements UserDAO {
      * @return all users matching the passed parameters
      */
     @Override
-    public List<User> get(String status, String role, String surname) {
+    public List<User> getUser(String status, String role, String surname) {
         StringBuffer sql = new StringBuffer("SELECT * FROM " + UserConstant.TABLE_USER);
         List<String> strings = new ArrayList<>();
 

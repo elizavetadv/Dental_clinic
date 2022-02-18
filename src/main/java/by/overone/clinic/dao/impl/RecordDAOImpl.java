@@ -3,7 +3,6 @@ package by.overone.clinic.dao.impl;
 import by.overone.clinic.controller.exception.ExceptionCode;
 import by.overone.clinic.dao.ReceptionDAO;
 import by.overone.clinic.dao.RecordDAO;
-import by.overone.clinic.dao.UserDAO;
 import by.overone.clinic.dao.exception.DAONotExistException;
 import by.overone.clinic.dao.exception.DAORecordException;
 import by.overone.clinic.dto.RecordDTO;
@@ -61,7 +60,7 @@ public class RecordDAOImpl implements RecordDAO {
             " WHERE " + UserConstant.STATUS + "=?";
 
     /**
-     * This method is used to make record
+     * This method is used to add record to database
      *
      * @param id user id
      * @param recordDTO data that user can enter to make record
@@ -97,7 +96,7 @@ public class RecordDAOImpl implements RecordDAO {
     }
 
     /**
-     * This method is used to update record
+     * This method is used to update record in database
      *
      * @param id record id
      * @param recordDTO record data available for updating
@@ -114,7 +113,7 @@ public class RecordDAOImpl implements RecordDAO {
     }
 
     /**
-     * This method is used to get all records
+     * This method is used to get all records from database
      *
      * @return list of RecordDTO
      */
@@ -124,7 +123,7 @@ public class RecordDAOImpl implements RecordDAO {
     }
 
     /**
-     * This method is used to get record by id
+     * This method is used to get record by id from database
      *
      * @param id record id
      * @return record
@@ -139,7 +138,7 @@ public class RecordDAOImpl implements RecordDAO {
     }
 
     /**
-     * This method is used to get client's records by their id
+     * This method is used to get client's records by their id from database
      *
      * @param id client id
      * @return list of RecordDTO
@@ -154,7 +153,7 @@ public class RecordDAOImpl implements RecordDAO {
     }
 
     /**
-     * This method is used to get records by doctor id
+     * This method is used to get records by doctor id from database
      *
      * @param id doctor id
      * @return list of RecordDTO
@@ -169,7 +168,7 @@ public class RecordDAOImpl implements RecordDAO {
     }
 
     /**
-     * This method is used to get records by specified status
+     * This method is used to get records by specified status from database
      *
      * @param status status
      * @return list of records

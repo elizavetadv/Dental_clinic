@@ -23,5 +23,5 @@ public interface UserDAO {
 
     List<User> getAllUsers();
 
-    List<User> get(String status, String role, String surname);
+    List<User> getUser(String status, String role, String surname);
 }

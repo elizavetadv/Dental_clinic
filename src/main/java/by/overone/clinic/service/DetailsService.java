@@ -4,6 +4,9 @@ import by.overone.clinic.dto.*;
 
 import java.util.List;
 
+/**
+ * @see by.overone.clinic.service.impl.DetailsServiceImpl with realization of all methods
+ */
 public interface DetailsService {
     void addClientDetails(long id, ClientDetailsDTO clientDetailsDTO);
 

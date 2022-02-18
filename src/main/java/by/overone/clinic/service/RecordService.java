@@ -5,6 +5,9 @@ import by.overone.clinic.model.Record;
 
 import java.util.List;
 
+/**
+ * @see by.overone.clinic.service.impl.RecordServiceImpl with realization of all methods
+ */
 public interface RecordService {
     void makeRecord(long id, RecordDTO recordDTO);
 

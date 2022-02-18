@@ -6,6 +6,9 @@ import by.overone.clinic.dto.UserUpdatedDTO;
 
 import java.util.List;
 
+/**
+ * @see by.overone.clinic.service.impl.UserServiceImpl with realization of all methods
+ */
 public interface UserService {
     void addUser(UserRegistrationDTO userRegistrationDTO);
 
