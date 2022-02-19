@@ -6,6 +6,9 @@
   - MySQL DB
   - Spring Framework
 
+### Short description of the project:
+
+The application allows users to register, perform various actions on their data (adding, changing, deleting), search for different parameters, as well as make an appointment with one of our doctors, who, in turn, is added by the administrator, and just like the client can perform various actions with their data.
 # Data model
 
 ## ER diagram for the data model
@@ -120,7 +123,6 @@ GET | /api/doctor/timetable/date | get record by date in params
 
 - Tomcat
 - Java 11
-- Gradle
 - MySQl
 
 ### Project requests are grouped as follows in Postman:
